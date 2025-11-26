@@ -1,0 +1,9 @@
+### Test the AI API Endpoint
+POST http://localhost:3000/api/ai-medico
+Content-Type: application/json
+
+{
+    "usuario_id": "123",
+    "estado_emocional": "preocupado",
+    "contexto": "paciente con dolor abdominal"
+}
