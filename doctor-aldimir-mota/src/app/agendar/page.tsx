@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { GoogleSignInButton } from '@/components/GoogleSignInButton';
+import { TURBOPACK_CLIENT_BUILD_MANIFEST } from 'next/dist/shared/lib/constants';
 
 export default function AgendarCita() {
   const [enviado, setEnviado] = useState(false);
@@ -13,18 +14,16 @@ export default function AgendarCita() {
   useEffect(() => {
     // Manejar parámetros de query para feedback de autenticación
     const urlParams = new URLSearchParams(window.location.search);
-    const auth = urlParams.get('auth');
-    const error = urlParams.get('error');
 
-    if (auth === 'success') {
+    if (urlParams.get('auth') === 'success') {
       // Limpiar la URL
       window.history.replaceState({}, document.title, window.location.pathname);
       // Mostrar mensaje de éxito (el componente GoogleSignInButton ya maneja el estado del usuario)
     }
 
-    if (error) {
+    if (urlParams.get('error')) {
       let errorMessage = 'Hubo un error con la autenticación';
-      switch (error) {
+      switch (urlParams.get('error')) {
         case 'no_code':
           errorMessage = 'No se recibió el código de autorización';
           break;
@@ -55,7 +54,13 @@ export default function AgendarCita() {
     const data = {
       nombre: formData.get('nombre'),
       telefono: formData.get('telefono'),
-      motivo: formData.get('motivo') || 'Interés en Promo Ultrasonido',
+      _reason: formData.get('motivo') || 'Interés en Promo Ultrasonido',
+      get motivo() {
+        return this._reason;
+      },
+      set motivo(value) {
+        this._reason = value;
+      },
       recaptcha: recaptchaRef.current?.getValue(),
     };
     try {

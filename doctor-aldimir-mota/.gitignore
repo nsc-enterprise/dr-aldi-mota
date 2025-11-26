@@ -40,9 +40,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Firebase cache and build artifacts
+
 .vercel
 .env*.local
 
 node_modules/
 .next/
 .env.local
+

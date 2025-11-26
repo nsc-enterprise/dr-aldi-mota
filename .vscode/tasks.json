@@ -8,6 +8,15 @@
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "test"
+		},
+		{
+			"label": "Run Next.js Build",
+			"type": "shell",
+			"command": "npm run build --prefix doctor-aldimir-mota",
+			"group": "build",
+			"presentation": {
+				"reveal": "silent"
+			}
 		}
 	]
 }

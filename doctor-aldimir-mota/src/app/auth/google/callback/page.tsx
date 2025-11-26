@@ -30,7 +30,7 @@ export default function GoogleAuthCallback() {
             client_secret: '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',
             code: code,
             grant_type: 'authorization_code',
-            redirect_uri: `${window.location.origin}/auth/google/callback`,
+            redirect_uri: `${window.location.origin}/http://localhost:3001/auth/google/callback`,
           }),
         });
 
