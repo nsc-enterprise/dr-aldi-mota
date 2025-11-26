@@ -1,73 +1,22 @@
-import { useState, useEffect } from 'react';
-
-const GOOGLE_CLIENT_ID = '875894762854-s3mua87g0k4j9r5645hff64d4vhtfehm.apps.googleusercontent.com';
-const GOOGLE_REDIRECT_URI = typeof window !== 'undefined' ?
-  `${window.location.origin}/auth/google/callback` :
-  '';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 export function GoogleSignInButton() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Verificar si hay un usuario guardado en localStorage
-    const savedUser = localStorage.getItem('google_user');
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        localStorage.removeItem('google_user');
-      }
-    }
-  }, []);
-
-  const generateGoogleAuthUrl = () => {
-    const scope = 'openid email profile';
-    const responseType = 'code';
-    const state = Math.random().toString(36).substring(7); // Para seguridad
-
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${GOOGLE_CLIENT_ID}&` +
-      `redirect_uri=${encodeURIComponent(GOOGLE_REDIRECT_URI)}&` +
-      `scope=${encodeURIComponent(scope)}&` +
-      `response_type=${responseType}&` +
-      `state=${state}&` +
-      `access_type=offline&` +
-      `prompt=consent`;
-
-    return authUrl;
-  };
-
-  const handleSignIn = () => {
-    setLoading(true);
-    try {
-      const authUrl = generateGoogleAuthUrl();
-      window.location.href = authUrl; // Redirigir a Google OAuth
-    } catch (error) {
-      console.error('Error iniciando sign in:', error);
-      alert('Error al iniciar sesión con Google');
-      setLoading(false);
-    }
-  };
-
-  const handleSignOut = () => {
-    setUser(null);
-    localStorage.removeItem('google_user');
-  };
+  const { data: session, status } = useSession();
+  const loading = status === 'loading';
 
   return (
     <div className="flex flex-col items-center gap-4">
-      {user ? (
+      {session ? (
         <>
           <div className="flex items-center gap-2">
-            <img src={user.picture} alt="avatar" className="w-8 h-8 rounded-full" />
-            <span className="font-medium text-gray-700">{user.name}</span>
+            <img src={session.user?.image || ''} alt="avatar" className="w-8 h-8 rounded-full" />
+            <span className="font-medium text-gray-700">{session.user?.name}</span>
           </div>
-          <button onClick={handleSignOut} className="bg-gray-200 px-3 py-1 rounded text-sm">Cerrar sesión</button>
+          <button onClick={() => signOut()} className="bg-gray-200 px-3 py-1 rounded text-sm">Cerrar sesión</button>
         </>
       ) : (
         <button
-          onClick={handleSignIn}
+          onClick={() => signIn('google')}
           disabled={loading}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition-colors flex items-center gap-2"
         >
@@ -80,5 +29,3 @@ export function GoogleSignInButton() {
     </div>
   );
 }
-
-// Removed duplicate return block and closing brace

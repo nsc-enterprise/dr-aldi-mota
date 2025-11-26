@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import GoogleProvider from 'next-auth/providers/google';
 
 // Definición de tipos
 interface OutputAEP {
@@ -103,4 +104,13 @@ function generarSimulacion(cita: any): OutputAEP {
         contenido: "No hay citas pendientes. (Configura tu API Key para análisis real)",
         fuente: "Sistema"
     };
-}
+}export const authOptions = {
+    providers: [
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID || "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+        }),
+    ],
+    // Add more options here as needed (callbacks, session, etc.)
+};
+
