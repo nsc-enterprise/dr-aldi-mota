@@ -14,10 +14,6 @@ interface OutputAEP {
     fuente: string;
 }
 
-// Inicializar Gemini
-// NOTA: Si no hay API Key, usaremos el modo simulación para que no falle la app
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
 export async function POST(request: Request) {
     try {
@@ -48,17 +44,46 @@ INSTRUCCIONES:
     "fuente": "Origen del dato (ej. Formulario, Historial)"
 }`;
 
-        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-        const completion = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: prompt }],
-            max_tokens: 512,
+        // 4EVERLAND AI integration
+        const apiKey = process.env.EVERLAND_API_KEY;
+        const siteUrl = process.env.EVERLAND_SITE_URL || "https://doctoraldimir.com";
+        const siteName = process.env.EVERLAND_SITE_NAME || "Doctor Aldimir Mota";
+        const response = await fetch("https://ai.api.4everland.org/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "HTTP-Referer": siteUrl,
+                "X-Title": siteName,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "mistralai/mixtral-8x7b-instruct",
+                messages: [{ role: "user", content: prompt }],
+                response_format: { type: "json_object" }
+            }),
         });
-
-        const text = completion.choices[0].message.content;
+        const result = await response.json();
+        const text = result.choices?.[0]?.message?.content;
+        if (!text) {
+            return NextResponse.json({
+                tipo_accion: "alerta_anticipatoria",
+                titulo: "Respuesta vacía de DeepSeek",
+                contenido: "No se recibió contenido de la IA.",
+                fuente: "Sistema AEP"
+            });
+        }
         const jsonString = text.replace(/```json/g, '').replace(/```/g, '').trim();
-        const data: OutputAEP = JSON.parse(jsonString);
-
+        let data: OutputAEP;
+        try {
+            data = JSON.parse(jsonString);
+        } catch (e) {
+            return NextResponse.json({
+                tipo_accion: "alerta_anticipatoria",
+                titulo: "Error de formato IA",
+                contenido: "La respuesta de la IA no es un JSON válido.",
+                fuente: "Sistema AEP"
+            });
+        }
         return NextResponse.json(data);
     } catch (error) {
         console.error("Error en AEP AI:", error);
