@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Next.js Dev Server",
+			"type": "shell",
+			"command": "npm run dev --prefix doctor-aldimir-mota",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run Next.js Build",
+			"type": "shell",
+			"command": "npm run build --prefix doctor-aldimir-mota",
+			"group": "build",
+			"presentation": {
+				"reveal": "silent"
+			}
+		}
+	]
+}
