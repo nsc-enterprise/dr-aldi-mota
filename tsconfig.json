@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-<<<<<<< HEAD
+  "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -19,8 +19,9 @@
         "name": "next"
       }
     ],
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["*"]
     }
   },
   "include": [
@@ -33,19 +34,3 @@
   ],
   "exclude": ["node_modules"]
 }
-=======
-    "target": "esnext",
-    "module": "esnext",
-    "jsx": "react-jsx",
-    "allowJs": true,
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  }
-}
->>>>>>> 45c0faee516042ba21b307c27166add3318427d0
