@@ -87,13 +87,13 @@ export default function AgendarCita() {
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/medical-icons.png')]"></div>
         <div className="max-w-md mx-auto relative z-10 text-center">
           <span className="inline-block bg-blue-500/50 backdrop-blur-sm border border-blue-400/30 text-blue-50 text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
-            Oferta Especial Facebook
+            📌Oferta Especial Facebook 📌
           </span>
           <h1 className="text-3xl font-extrabold mb-2 leading-tight">
             Ultrasonidos de Alta Definición
           </h1>
           <p className="text-blue-100 text-lg font-medium">
-            Diagnóstico preciso a un precio accesible.
+            Diagnóstico de funcion cardiaca, éxamen musculoesquelético y otros estudios. 
           </p>
         </div>
       </div>
@@ -105,8 +105,8 @@ export default function AgendarCita() {
           {/* Beneficios Rápidos */}
           <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-around text-center">
             <div>
-              <div className="text-blue-600 font-bold text-xl">4D/5D</div>
               <div className="text-[10px] text-gray-500 uppercase font-bold">Tecnología</div>
+              <div className="text-blue-600 font-bold text-xl">4D/HQ</div>  
             </div>
             <div className="w-px bg-gray-200"></div>
             <div>
@@ -115,8 +115,8 @@ export default function AgendarCita() {
             </div>
             <div className="w-px bg-gray-200"></div>
             <div>
-              <div className="text-blue-600 font-bold text-xl">Rápido</div>
               <div className="text-[10px] text-gray-500 uppercase font-bold">Sin Espera</div>
+              <div className="text-blue-600 font-bold text-xl">Cita</div>  
             </div>
           </div>
 
@@ -130,7 +130,7 @@ export default function AgendarCita() {
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">¡Solicitud Recibida!</h3>
                 <p className="text-gray-600 mb-6">
-                  El Dr. Aldimir Mota o su asistente te contactarán en breve para confirmar tu cita.
+                  Un asistente te contactarán en breve para confirmar tu cita.
                 </p>
                 <button 
                   onClick={() => window.location.reload()}
@@ -143,7 +143,7 @@ export default function AgendarCita() {
               <>
                 <div className="text-center mb-6">
                   <h2 className="text-lg font-bold text-gray-800">Reserva tu lugar ahora</h2>
-                  <p className="text-sm text-gray-500">Cupos limitados.</p>
+                  <p className="text-sm text-gray-500">Pocas fechas disponibles.</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
@@ -195,9 +195,10 @@ export default function AgendarCita() {
                         name="motivo"
                         className="w-full pl-10 p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 appearance-none"
                       >
-                        <option value="Ultrasonido Promoción">✨ Ultrasonido</option>
+                        <option value="Ultrasonido Promoción">📌Ultrasonido</option>
                         <option value="Consulta General">Consulta General</option>
                         <option value="Control Prenatal">Control Prenatal</option>
+                        <option value="Examen Musculoesquelético">Examen Musculoesquelético</option>
                         <option value="Otro">Otro motivo</option>
                       </select>
                       <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -211,10 +212,13 @@ export default function AgendarCita() {
                   <div className="flex justify-center">
                     <ReCAPTCHA
                       ref={recaptchaRef}
-                      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || 'TU_SITE_KEY_AQUI'}
+                      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? ''}
                       onChange={token => setCaptchaValido(!!token)}
                       theme="light"
                     />
+                    {!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
+                      <p className="text-red-500 text-xs text-center mt-2">Error: Falta la clave pública de reCAPTCHA. Verifica NEXT_PUBLIC_RECAPTCHA_SITE_KEY en .env.local.</p>
+                    )}
                   </div>
                   <button
                     type="submit"
@@ -234,7 +238,7 @@ export default function AgendarCita() {
                   </button>
                   
                   <p className="text-center text-xs text-gray-400 mt-4">
-                    🔒 Tus datos están protegidos. Solo se usarán para contactarte.
+                     Tus datos están protegidos. Solo se usarán para contactarte.
                   </p>
                 </form>
               </>
