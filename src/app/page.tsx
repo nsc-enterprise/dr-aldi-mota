@@ -1,8 +1,8 @@
-'use client';
-
+"use client";
 import { useState } from 'react';
 import { ActionCard } from '@/components/ActionCard';
 import { OutputAEP } from '@/types';
+import AuthComponent from '../components/Auth';
 
 export default function Home() {
   const [loading, setLoading] = useState(false);

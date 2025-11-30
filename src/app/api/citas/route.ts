@@ -11,27 +11,7 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    // Validar reCAPTCHA
-    if (!body.recaptcha) {
-      return NextResponse.json(
-        { error: 'Falta verificación reCAPTCHA' },
-        { status: 400 }
-      );
-    }
-    // Verificar el token con Google
-    const secret = process.env.RECAPTCHA_SECRET_KEY || 'TU_SECRET_KEY_AQUI';
-    const verifyRes = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `secret=${secret}&response=${body.recaptcha}`,
-    });
-    const verifyData = await verifyRes.json();
-    if (!verifyData.success) {
-      return NextResponse.json(
-        { error: 'Verificación reCAPTCHA fallida' },
-        { status: 400 }
-      );
-    }
+    // reCAPTCHA validation removed
     // Guardar en nuestra "Base de Datos"
     const nuevaCita = db.add({
       nombre: body.nombre,

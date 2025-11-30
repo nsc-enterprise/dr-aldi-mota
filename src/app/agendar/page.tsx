@@ -1,15 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
+// import ReCAPTCHA from 'react-google-recaptcha';
 import { GoogleSignInButton } from '@/components/GoogleSignInButton';
 import { TURBOPACK_CLIENT_BUILD_MANIFEST } from 'next/dist/shared/lib/constants';
 
 export default function AgendarCita() {
   const [enviado, setEnviado] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [captchaValido, setCaptchaValido] = useState(false);
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  // const [captchaValido, setCaptchaValido] = useState(false);
+  // const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   useEffect(() => {
     // Manejar parámetros de query para feedback de autenticación
@@ -45,10 +45,10 @@ export default function AgendarCita() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!captchaValido) {
-      alert('Por favor verifica que no eres un robot.');
-      return;
-    }
+    // if (!captchaValido) {
+    //   alert('Por favor verifica que no eres un robot.');
+    //   return;
+    // }
     setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
     const data = {
@@ -61,7 +61,7 @@ export default function AgendarCita() {
       set motivo(value) {
         this._reason = value;
       },
-      recaptcha: recaptchaRef.current?.getValue(),
+      // recaptcha: recaptchaRef.current?.getValue(),
     };
     try {
       const res = await fetch('/api/citas', {
@@ -209,17 +209,7 @@ export default function AgendarCita() {
                     </div>
                   </div>
 
-                  <div className="flex justify-center">
-                    <ReCAPTCHA
-                      ref={recaptchaRef}
-                      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? ''}
-                      onChange={token => setCaptchaValido(!!token)}
-                      theme="light"
-                    />
-                    {!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
-                      <p className="text-red-500 text-xs text-center mt-2">Error: Falta la clave pública de reCAPTCHA. Verifica NEXT_PUBLIC_RECAPTCHA_SITE_KEY en .env.local.</p>
-                    )}
-                  </div>
+                  {/* reCAPTCHA removed */}
                   <button
                     type="submit"
                     disabled={isSubmitting}
