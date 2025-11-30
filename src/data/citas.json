@@ -22,5 +22,13 @@
     "nombre": "juan",
     "telefono": "2881288324",
     "motivo": "Otro"
+  },
+  {
+    "id": "i8qy1n",
+    "fecha_creacion": "2025-11-30T09:14:14.272Z",
+    "estado": "pendiente",
+    "nombre": "lupe",
+    "telefono": "28728728722",
+    "motivo": "Consulta General"
   }
 ]
