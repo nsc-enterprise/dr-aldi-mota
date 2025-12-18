@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import { Cita } from '@/lib/db';
 
+// Use edge runtime to prevent SSR issues with NextAuth
+export const runtime = 'edge';
+
 export default function PacientesPage() {
   const [citas, setCitas] = useState<Cita[]>([]);
   const [loading, setLoading] = useState(true);

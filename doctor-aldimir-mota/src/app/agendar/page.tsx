@@ -1,8 +1,17 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import ReCAPTCHA from 'react-google-recaptcha';
-import { GoogleSignInButton } from '@/components/GoogleSignInButton';
+
+// Disable SSR for this entire page to prevent build-time URL errors
+export const runtime = 'edge';
+
+// Lazy load GoogleSignInButton to prevent NextAuth from loading during SSR/prerender
+const GoogleSignInButton = dynamic(
+  () => import('@/components/GoogleSignInButton').then(mod => ({ default: mod.GoogleSignInButton })),
+  { ssr: false, loading: () => <div>Cargando...</div> }
+);
 
 export default function AgendarCita() {
   const [enviado, setEnviado] = useState(false);

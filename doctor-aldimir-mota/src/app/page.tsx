@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { ActionCard } from '@/components/ActionCard';
 import { OutputAEP } from '@/types';
 
+// Use edge runtime to prevent SSR issues with NextAuth
+export const runtime = 'edge';
+
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [suggestion, setSuggestion] = useState<OutputAEP | null>(null);

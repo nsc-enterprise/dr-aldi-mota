@@ -8,6 +8,8 @@ export const authOptions = {
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
 		}),
 	],
+	secret: process.env.NEXTAUTH_SECRET,
+	// Don't require NEXTAUTH_URL during build - Next.js auto-detects it
 	// Puedes agregar más opciones aquí (callbacks, session, etc.)
 };
 

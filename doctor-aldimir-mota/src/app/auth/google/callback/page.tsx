@@ -4,6 +4,9 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+// Use edge runtime to prevent SSR issues with NextAuth
+export const runtime = 'edge';
+
 export default function GoogleAuthCallback() {
   const router = useRouter();
 
