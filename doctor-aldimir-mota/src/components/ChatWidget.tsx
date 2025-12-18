@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import { createClient } from '@supabase/supabase-js';
 
 interface Message {
   id: string;
@@ -34,20 +33,9 @@ export default function ChatWidget() {
   const [newMessage, setNewMessage] = useState('');
   const [unreadTotal, setUnreadTotal] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [supabase, setSupabase] = useState<any>(null);
 
-  // Initialize Supabase client
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-      
-      if (supabaseUrl && supabaseKey) {
-        const client = createClient(supabaseUrl, supabaseKey);
-        setSupabase(client);
-      }
-    }
-  }, []);
+  // Chat disabled until Supabase is configured
+  const supabase = null;
 
   // Load conversations
   useEffect(() => {

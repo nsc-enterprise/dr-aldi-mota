@@ -5,6 +5,8 @@ import { ActionCard } from '@/components/ActionCard';
 import { GoogleSignInButton } from '@/components/GoogleSignInButton';
 import { OutputAEP } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [suggestion, setSuggestion] = useState<OutputAEP | null>(null);
