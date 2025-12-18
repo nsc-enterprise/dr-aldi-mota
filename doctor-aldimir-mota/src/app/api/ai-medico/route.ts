@@ -2,8 +2,6 @@
 
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { OpenAI } from 'openai';
-import GoogleProvider from 'next-auth/providers/google';
 
 // Definición de tipos
 interface OutputAEP {
