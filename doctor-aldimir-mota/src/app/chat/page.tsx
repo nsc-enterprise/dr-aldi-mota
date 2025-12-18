@@ -7,8 +7,8 @@ import ChatBox from '@/components/ChatBox';
 import ConversationList from '@/components/ConversationList';
 import { conversations, messages, chatUsers, MessageWithSender, ConversationWithUsers } from '@/lib/chat';
 
-// Removed edge runtime temporarily to fix 404 issue
-// export const runtime = 'edge';
+// Force dynamic rendering to prevent SSR/prerendering with missing env vars
+export const dynamic = 'force-dynamic';
 
 function ChatPageContent() {
   const { data: session, status } = useSession();
