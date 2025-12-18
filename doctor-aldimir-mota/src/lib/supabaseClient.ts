@@ -1,14 +1,12 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
 let _supabase: SupabaseClient | null = null;
 let _initAttempted = false;
 
 /**
  * Get or create the Supabase client instance
  * Only initializes when first called, not at module load time
+ * Reads environment variables inside the function to avoid build-time evaluation
  */
 export function getSupabaseClient(): SupabaseClient {
   if (_supabase) return _supabase;
@@ -18,6 +16,10 @@ export function getSupabaseClient(): SupabaseClient {
   }
   
   _initAttempted = true;
+  
+  // Read env vars inside the function to prevent module-level evaluation during build
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
   
   // Validate URL exists and is not empty
   if (!supabaseUrl || supabaseUrl.trim().length === 0) {
