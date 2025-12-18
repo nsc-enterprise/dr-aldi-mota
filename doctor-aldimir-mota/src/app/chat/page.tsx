@@ -23,12 +23,16 @@ function ChatPageContent() {
   // Initialize current user
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.email) {
+      const email = session.user.email; // Extract to satisfy TypeScript
+      const nombre = session.user.name || 'Usuario';
+      const avatar_url = session.user.image || undefined;
+      
       const initUser = async () => {
         try {
           const user = await chatUsers.createOrUpdate({
-            email: session.user.email,
-            nombre: session.user.name || 'Usuario',
-            avatar_url: session.user.image || undefined,
+            email,
+            nombre,
+            avatar_url,
             role: 'patient' // Default role, you can customize this
           });
           setCurrentUser(user);
