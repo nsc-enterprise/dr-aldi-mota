@@ -8,10 +8,21 @@ import type { Database } from '@/types/supabase';
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || '';
 
-const supabase: SupabaseClient<Database> | null = 
+const _supabase: SupabaseClient<Database> | null = 
   supabaseUrl && supabaseKey 
     ? createClient<Database>(supabaseUrl, supabaseKey)
     : null;
+
+/**
+ * Get the typed Supabase client
+ * @throws Error if Supabase is not configured
+ */
+function getSupabase(): SupabaseClient<Database> {
+  if (!_supabase) {
+    throw new Error('Supabase not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables.');
+  }
+  return _supabase;
+}
 
 /**
  * Interfaz que representa una cita médica
@@ -42,13 +53,13 @@ export const db = {
    * @returns Array de citas o array vacío si hay error
    */
   getAll: async (): Promise<Cita[]> => {
-    if (!supabase) {
+    if (!_supabase) {
       console.warn('Supabase not configured - returning empty array');
       return [];
     }
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from('citas')
         .select('*')
         .order('fecha_creacion', { ascending: false });
@@ -67,12 +78,8 @@ export const db = {
    * @returns La cita creada con todos sus campos
    */
   add: async (cita: Omit<Cita, 'id' | 'fecha_creacion' | 'estado'>) => {
-    if (!supabase) {
-      throw new Error('Supabase not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables.');
-    }
-
     try {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from('citas')
         .insert([
           {
@@ -100,12 +107,8 @@ export const db = {
    * @returns La cita actualizada o null si no se encuentra
    */
   update: async (id: string, updates: Partial<Cita>) => {
-    if (!supabase) {
-      throw new Error('Supabase not configured');
-    }
-
     try {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from('citas')
         .update(updates)
         .eq('id', id)
@@ -126,12 +129,8 @@ export const db = {
    * @returns true si se eliminó, false si no se encontró
    */
   delete: async (id: string) => {
-    if (!supabase) {
-      throw new Error('Supabase not configured');
-    }
-
     try {
-      const { error } = await supabase
+      const { error } = await getSupabase()
         .from('citas')
         .delete()
         .eq('id', id);
@@ -149,13 +148,13 @@ export const db = {
    * @returns La última cita o null si no hay ninguna
    */
   getLast: async (): Promise<Cita | null> => {
-    if (!supabase) {
+    if (!_supabase) {
       console.warn('Supabase not configured - returning null');
       return null;
     }
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from('citas')
         .select('*')
         .order('fecha_creacion', { ascending: false })
