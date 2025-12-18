@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { SessionProviderWrapper } from "./SessionProviderWrapper";
+import ChatWidget from "@/components/ChatWidget";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
         <SessionProviderWrapper>
           <Navbar />
           {children}
+          <ChatWidget />
         </SessionProviderWrapper>
       </body>
     </html>
