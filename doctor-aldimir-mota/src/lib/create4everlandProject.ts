@@ -30,12 +30,12 @@ export async function create4everlandProject({
   return result;
 }
 
-
+/*
 // Usage example (async context):
 async function runCreateProject() {
   const result = await create4everlandProject({
     name: 'Doctor Aldimir Mota',
-    secret: process.env.EVERLAND_API_SECRET
+    secret: process.env.EVERLAND_API_SECRET || ''
   });
   if (result && result.projectId) {
     console.log('Created projectId:', result.projectId);
@@ -44,5 +44,5 @@ async function runCreateProject() {
   }
 }
 
-runCreateProject();
-
+// Uncomment to run: runCreateProject();
+*/
