@@ -7,7 +7,8 @@ import ChatBox from '@/components/ChatBox';
 import ConversationList from '@/components/ConversationList';
 import { conversations, messages, chatUsers, MessageWithSender, ConversationWithUsers } from '@/lib/chat';
 
-export const runtime = 'edge';
+// Removed edge runtime temporarily to fix 404 issue
+// export const runtime = 'edge';
 
 function ChatPageContent() {
   const { data: session, status } = useSession();
