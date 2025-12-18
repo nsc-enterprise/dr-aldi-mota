@@ -18,7 +18,7 @@ interface OutputAEP {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const ultimaCita = db.getLast();
+        const ultimaCita = await db.getLast();
 
         const prompt = `Actúa como el "Asistente Estratégico Proactivo" (AEP) del Dr. Aldimir Mota.
 Tu objetivo es analizar la situación actual y generar UNA sola acción concreta y de alto valor.

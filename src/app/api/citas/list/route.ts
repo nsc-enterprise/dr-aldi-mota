@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 
 export async function GET() {
   try {
-    const citas = db.getAll();
+    const citas = await db.getAll();
     // Ordenar por fecha más reciente primero
     const citasOrdenadas = citas.reverse();
     return NextResponse.json(citasOrdenadas);

@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     }
     // reCAPTCHA validation removed
     // Guardar en nuestra "Base de Datos"
-    const nuevaCita = db.add({
+    const nuevaCita = await db.add({
       nombre: body.nombre,
       telefono: body.telefono,
       motivo: body.motivo

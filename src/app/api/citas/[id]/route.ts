@@ -8,7 +8,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const success = db.delete(id);
+    const success = await db.delete(id);
     
     if (success) {
       return NextResponse.json({ success: true });
@@ -28,7 +28,7 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
     
-    const updatedCita = db.update(id, body);
+    const updatedCita = await db.update(id, body);
     
     if (updatedCita) {
       return NextResponse.json(updatedCita);
