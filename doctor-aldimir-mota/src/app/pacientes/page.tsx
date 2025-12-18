@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { Cita } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export default function PacientesPage() {
   const [citas, setCitas] = useState<Cita[]>([]);
   const [loading, setLoading] = useState(true);
