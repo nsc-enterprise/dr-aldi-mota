@@ -8,20 +8,33 @@ import type { Database } from '@/types/supabase';
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || '';
 
-const _supabase: SupabaseClient<Database> | null = 
-  supabaseUrl && supabaseKey 
-    ? createClient<Database>(supabaseUrl, supabaseKey)
-    : null;
+// Lazy initialization to avoid build-time errors when env vars are missing
+let _supabase: SupabaseClient<Database> | null = null;
+
+function initSupabase(): SupabaseClient<Database> | null {
+  if (_supabase) return _supabase;
+  
+  if (supabaseUrl && supabaseKey) {
+    try {
+      _supabase = createClient<Database>(supabaseUrl, supabaseKey);
+    } catch (error) {
+      console.error('Failed to initialize Supabase client:', error);
+      return null;
+    }
+  }
+  return _supabase;
+}
 
 /**
  * Get the typed Supabase client
  * @throws Error if Supabase is not configured
  */
 function getSupabase(): SupabaseClient<Database> {
-  if (!_supabase) {
+  const client = initSupabase();
+  if (!client) {
     throw new Error('Supabase not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables.');
   }
-  return _supabase;
+  return client;
 }
 
 /**
@@ -53,7 +66,7 @@ export const db = {
    * @returns Array de citas o array vacío si hay error
    */
   getAll: async (): Promise<Cita[]> => {
-    if (!_supabase) {
+    if (!initSupabase()) {
       console.warn('Supabase not configured - returning empty array');
       return [];
     }
@@ -150,7 +163,7 @@ export const db = {
    * @returns La última cita o null si no hay ninguna
    */
   getLast: async (): Promise<Cita | null> => {
-    if (!_supabase) {
+    if (!initSupabase()) {
       console.warn('Supabase not configured - returning null');
       return null;
     }
