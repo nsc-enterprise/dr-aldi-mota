@@ -81,7 +81,7 @@ export default function AgendarCita() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white font-sans">
+    <main className="min-h-screen bg-linear-to-b from-blue-50 to-white font-sans">
       {/* Hero Section - Mobile Optimized */}
       <div className="bg-blue-600 text-white pt-8 pb-16 px-6 rounded-b-[2.5rem] shadow-lg relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/medical-icons.png')]"></div>

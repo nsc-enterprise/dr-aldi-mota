@@ -79,16 +79,16 @@ export const db = {
    */
   add: async (cita: Omit<Cita, 'id' | 'fecha_creacion' | 'estado'>) => {
     try {
-      const { data, error } = await getSupabase()
-        .from('citas')
-        .insert([
-          {
-            nombre: cita.nombre,
-            telefono: cita.telefono,
-            motivo: cita.motivo,
-            estado: 'pendiente'
-          }
-        ])
+      const newCita: Database['public']['Tables']['citas']['Insert'] = {
+        nombre: cita.nombre,
+        telefono: cita.telefono,
+        motivo: cita.motivo,
+        estado: 'pendiente'
+      };
+      
+      const { data, error } = await (getSupabase()
+        .from('citas') as any)
+        .insert([newCita])
         .select()
         .single();
 
@@ -108,9 +108,11 @@ export const db = {
    */
   update: async (id: string, updates: Partial<Cita>) => {
     try {
-      const { data, error } = await getSupabase()
-        .from('citas')
-        .update(updates)
+      const updateData: Database['public']['Tables']['citas']['Update'] = updates;
+      
+      const { data, error } = await (getSupabase()
+        .from('citas') as any)
+        .update(updateData)
         .eq('id', id)
         .select()
         .single();
