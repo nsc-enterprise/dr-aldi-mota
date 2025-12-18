@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 export const dynamic = 'force-dynamic';
 
 // Lazy load GoogleSignInButton to prevent NextAuth from loading during SSR/prerender
-const GoogleSignInButton = dynamic(
+const GoogleSignInButton = nextDynamic(
   () => import('@/components/GoogleSignInButton').then(mod => ({ default: mod.GoogleSignInButton })),
   { ssr: false, loading: () => <div>Cargando...</div> }
 );
