@@ -54,10 +54,11 @@ export default function ChatWidget() {
     if (!session?.user?.email || !supabase) return;
 
     const loadConversations = async () => {
+      const userEmail = session.user.email;
       const { data: userData } = await supabase
         .from('chat_users')
         .select('id')
-        .eq('email', session.user.email)
+        .eq('email', userEmail)
         .single();
 
       if (!userData) return;
@@ -147,10 +148,11 @@ export default function ChatWidget() {
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedConversation || !session?.user?.email || !supabase) return;
 
+    const userEmail = session.user.email;
     const { data: userData } = await supabase
       .from('chat_users')
       .select('id')
-      .eq('email', session.user.email)
+      .eq('email', userEmail)
       .single();
 
     if (!userData) return;
