@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import ChatBox from '@/components/ChatBox';
 import ConversationList from '@/components/ConversationList';
-import { conversations, messages, chatUsers, MessageWithSender, ConversationWithUsers } from '@/lib/chat';
+import type { MessageWithSender, ConversationWithUsers } from '@/lib/chat';
 
 // Force dynamic rendering to prevent SSR/prerendering with missing env vars
 export const dynamic = 'force-dynamic';
@@ -30,6 +30,8 @@ function ChatPageContent() {
       
       const initUser = async () => {
         try {
+          // Dynamic import to avoid module evaluation at build time
+          const { chatUsers } = await import('@/lib/chat');
           const user = await chatUsers.createOrUpdate({
             email,
             nombre,
@@ -52,6 +54,7 @@ function ChatPageContent() {
     const loadConversations = async () => {
       try {
         setIsLoading(true);
+        const { conversations } = await import('@/lib/chat');
         const convs = await conversations.getByUserId(currentUser.id, currentUser.role);
         setAllConversations(convs);
       } catch (error) {
@@ -71,6 +74,7 @@ function ChatPageContent() {
     const loadMessages = async () => {
       try {
         setIsLoadingMessages(true);
+        const { messages, conversations } = await import('@/lib/chat');
         const msgs = await messages.getByConversation(conversationId);
         setCurrentMessages(msgs);
 
@@ -93,24 +97,34 @@ function ChatPageContent() {
     loadMessages();
 
     // Subscribe to new messages
-    const subscription = messages.subscribeToConversation(conversationId, (newMessage) => {
-      setCurrentMessages(prev => [...prev, newMessage as MessageWithSender]);
-      
-      // Mark as read if not from current user
-      if (newMessage.sender_id !== currentUser.id) {
-        messages.markAsRead([newMessage.id]);
-        conversations.resetUnreadCount(conversationId, currentUser.role);
-      }
-    });
+    const subscribeToMessages = async () => {
+      const { messages, conversations } = await import('@/lib/chat');
+      return messages.subscribeToConversation(conversationId, async (newMessage) => {
+        setCurrentMessages(prev => [...prev, newMessage as MessageWithSender]);
+        
+        // Mark as read if not from current user
+        if (newMessage.sender_id !== currentUser.id) {
+          const { messages: msgApi, conversations: convApi } = await import('@/lib/chat');
+          await msgApi.markAsRead([newMessage.id]);
+          await convApi.resetUnreadCount(conversationId, currentUser.role);
+        }
+      });
+    };
+
+    const subscription = subscribeToMessages();
 
     return () => {
-      subscription.then(sub => messages.unsubscribe(sub));
+      subscription.then(async (sub) => {
+        const { messages } = await import('@/lib/chat');
+        await messages.unsubscribe(sub);
+      });
     };
   }, [conversationId, currentUser]);
 
   const handleSendMessage = async (content: string) => {
     if (!conversationId || !currentUser) return;
 
+    const { messages } = await import('@/lib/chat');
     await messages.send(conversationId, currentUser.id, content);
     // Message will be added via subscription
   };
@@ -119,6 +133,7 @@ function ChatPageContent() {
     if (!currentUser) return;
 
     try {
+      const { chatUsers, conversations } = await import('@/lib/chat');
       // For demo purposes, create conversation with a default doctor
       // In production, you'd have a UI to select the doctor
       const doctorEmail = 'doctor@example.com'; // Replace with actual doctor selection
