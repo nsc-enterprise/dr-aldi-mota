@@ -24,7 +24,7 @@ export async function create4everlandProject({
       'Authorization': `Bearer ${secret}`,
       ...form.getHeaders()
     },
-    body: form
+    body: form as any // Node.js FormData compatibility with fetch
   });
   const result = await response.json();
   return result;
