@@ -1,18 +1,9 @@
 import { getSupabaseClient } from './supabaseClient';
 import type { Database } from '@/types/supabase';
+import type { ChatUser, Conversation, Message, ConversationWithUsers, MessageWithSender } from './chatTypes';
 
-type ChatUser = Database['public']['Tables']['chat_users']['Row'];
-type Conversation = Database['public']['Tables']['conversations']['Row'];
-type Message = Database['public']['Tables']['messages']['Row'];
-
-export interface ConversationWithUsers extends Conversation {
-  patient?: ChatUser;
-  doctor?: ChatUser;
-}
-
-export interface MessageWithSender extends Message {
-  sender?: ChatUser;
-}
+// Re-export types for convenience
+export type { ChatUser, Conversation, Message, ConversationWithUsers, MessageWithSender };
 
 // Initialize chat client
 function getChatClient() {

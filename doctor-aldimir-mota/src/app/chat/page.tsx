@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import ChatBox from '@/components/ChatBox';
 import ConversationList from '@/components/ConversationList';
-import type { MessageWithSender, ConversationWithUsers } from '@/lib/chat';
+import type { MessageWithSender, ConversationWithUsers } from '@/lib/chatTypes';
 
 // Force dynamic rendering to prevent SSR/prerendering with missing env vars
 export const dynamic = 'force-dynamic';

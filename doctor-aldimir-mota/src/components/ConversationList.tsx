@@ -1,6 +1,6 @@
 'use client';
 
-import { ConversationWithUsers } from '@/lib/chat';
+import { ConversationWithUsers } from '@/lib/chatTypes';
 import Link from 'next/link';
 
 interface ConversationListProps {

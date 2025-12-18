@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { MessageWithSender } from '@/lib/chat';
+import { MessageWithSender } from '@/lib/chatTypes';
 
 interface ChatBoxProps {
   conversationId: string;
