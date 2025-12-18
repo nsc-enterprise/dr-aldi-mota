@@ -12,7 +12,7 @@ export const runtime = 'edge';
 function ChatPageContent() {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
-  const conversationId = searchParams.get('id');
+  const conversationId = searchParams?.get('id') ?? undefined;
 
   const [allConversations, setAllConversations] = useState<ConversationWithUsers[]>([]);
   const [currentMessages, setCurrentMessages] = useState<MessageWithSender[]>([]);
