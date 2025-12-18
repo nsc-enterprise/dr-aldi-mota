@@ -2,10 +2,8 @@
 
 import { useState } from 'react';
 import { ActionCard } from '@/components/ActionCard';
+import { GoogleSignInButton } from '@/components/GoogleSignInButton';
 import { OutputAEP } from '@/types';
-
-// Use edge runtime to prevent SSR issues with NextAuth
-export const runtime = 'edge';
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -40,6 +38,11 @@ export default function Home() {
       
       <div className="w-full max-w-lg p-6 space-y-8 mt-8">
         
+        {/* Login Section */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <GoogleSignInButton />
+        </div>
+
         {/* Welcome Section */}
         <div className="text-center space-y-2">
             <h2 className="text-3xl font-bold text-gray-800">Hola, Doctor.</h2>
