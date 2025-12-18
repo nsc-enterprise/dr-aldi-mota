@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase';
 
 /**
@@ -8,7 +8,7 @@ import type { Database } from '@/types/supabase';
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || '';
 
-let supabase: ReturnType<typeof createClient<Database>> | null = null;
+let supabase: SupabaseClient<Database> | null = null;
 
 if (supabaseUrl && supabaseKey) {
   supabase = createClient<Database>(supabaseUrl, supabaseKey);
