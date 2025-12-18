@@ -194,7 +194,7 @@ export default function ChatWidget() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className={`fixed bottom-6 right-6 bg-white rounded-lg shadow-2xl z-50 transition-all ${
+        <div className={`fixed bottom-6 right-6 bg-white rounded-lg shadow-2xl z-50 transition-all max-w-[calc(100vw-3rem)] max-h-[calc(100vh-3rem)] ${
           isMinimized ? 'w-80 h-14' : 'w-96 h-[600px]'
         }`}>
           {/* Header */}
