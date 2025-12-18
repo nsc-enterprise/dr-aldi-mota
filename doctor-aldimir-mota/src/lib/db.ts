@@ -8,20 +8,55 @@ import type { Database } from '@/types/supabase';
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || '';
 
+/**
+ * Validate if a string is a valid URL
+ */
+function isValidUrl(urlString: string): boolean {
+  if (!urlString || urlString.trim().length === 0) return false;
+  try {
+    new URL(urlString);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // Lazy initialization to avoid build-time errors when env vars are missing
 let _supabase: SupabaseClient<Database> | null = null;
+let _initAttempted = false;
 
 function initSupabase(): SupabaseClient<Database> | null {
+  // Return cached client if already initialized
   if (_supabase) return _supabase;
   
-  if (supabaseUrl && supabaseKey) {
-    try {
-      _supabase = createClient<Database>(supabaseUrl, supabaseKey);
-    } catch (error) {
-      console.error('Failed to initialize Supabase client:', error);
-      return null;
+  // Don't retry if we already tried and failed
+  if (_initAttempted) return null;
+  
+  _initAttempted = true;
+  
+  // Validate URL format before attempting to create client
+  if (!isValidUrl(supabaseUrl)) {
+    if (typeof window === 'undefined') {
+      // Server-side: log warning but don't throw (allows build to continue)
+      console.warn('Supabase URL is not configured or invalid. Database operations will be disabled.');
     }
+    return null;
   }
+  
+  if (!supabaseKey || supabaseKey.trim().length === 0) {
+    if (typeof window === 'undefined') {
+      console.warn('Supabase key is not configured. Database operations will be disabled.');
+    }
+    return null;
+  }
+  
+  try {
+    _supabase = createClient<Database>(supabaseUrl, supabaseKey);
+  } catch (error) {
+    console.error('Failed to initialize Supabase client:', error);
+    return null;
+  }
+  
   return _supabase;
 }
 
