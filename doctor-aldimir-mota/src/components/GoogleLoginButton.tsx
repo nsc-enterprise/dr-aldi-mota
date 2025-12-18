@@ -6,7 +6,7 @@ export default function GoogleLoginButton() {
   if (session) {
     return (
       <button onClick={() => signOut()} className="px-4 py-2 bg-red-500 text-white rounded">
-        Cerrar sesión ({session.user.email})
+        Cerrar sesión ({session.user?.email || 'Usuario'})
       </button>
     );
   }
