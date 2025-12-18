@@ -22,11 +22,11 @@ function ChatPageContent() {
 
   // Initialize current user
   useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
+    if (status === 'authenticated' && session?.user?.email) {
       const initUser = async () => {
         try {
           const user = await chatUsers.createOrUpdate({
-            email: session.user.email!,
+            email: session.user.email,
             nombre: session.user.name || 'Usuario',
             avatar_url: session.user.image || undefined,
             role: 'patient' // Default role, you can customize this
