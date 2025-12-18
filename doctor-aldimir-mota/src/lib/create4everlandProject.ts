@@ -1,6 +1,18 @@
 import FormData from 'form-data';
 
-export async function create4everlandProject({ name, deployType = 'CLI', platform = 'IPFS', secret }) {
+interface Create4everlandProjectParams {
+  name: string;
+  deployType?: string;
+  platform?: string;
+  secret: string;
+}
+
+export async function create4everlandProject({ 
+  name, 
+  deployType = 'CLI', 
+  platform = 'IPFS', 
+  secret 
+}: Create4everlandProjectParams) {
   const form = new FormData();
   form.append('deployType', deployType);
   form.append('name', name);
