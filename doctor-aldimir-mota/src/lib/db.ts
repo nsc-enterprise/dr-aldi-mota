@@ -4,9 +4,9 @@ import type { Database } from '@/types/supabase';
 /**
  * Initialize Supabase client
  * Falls back to demo mode if credentials are missing
+ * Read environment variables lazily inside initSupabase to avoid build-time
+ * evaluation that can happen during Next.js prerender.
  */
-const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || '';
 
 /**
  * Validate if a string is a valid URL
@@ -33,7 +33,10 @@ function initSupabase(): SupabaseClient<Database> | null {
   if (_initAttempted) return null;
   
   _initAttempted = true;
-  
+  // Read env vars at runtime (not module load) to avoid empty values during build
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
   // Validate URL format before attempting to create client
   if (!isValidUrl(supabaseUrl)) {
     if (typeof window === 'undefined') {
@@ -42,7 +45,7 @@ function initSupabase(): SupabaseClient<Database> | null {
     }
     return null;
   }
-  
+
   if (!supabaseKey || supabaseKey.trim().length === 0) {
     if (typeof window === 'undefined') {
       console.warn('Supabase key is not configured. Database operations will be disabled.');
