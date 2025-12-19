@@ -45,23 +45,15 @@ export default function ChatWidget() {
       const userEmail = session?.user?.email;
       if (!userEmail) return;
       
-      const { data: userData } = await supabase
-        .from('chat_users')
-        .select('id')
-        .eq('email', userEmail)
-        .single();
+      const { data: userData } = await supabase.from('chat_users').select('id').eq('email', userEmail).single();
 
       if (!userData) return;
 
-      const { data } = await supabase
-        .from('conversations')
-        .select(`
+      const { data } = await supabase.from('conversations').select(`
           *,
           patient:chat_users!conversations_patient_id_fkey(name, email),
           doctor:chat_users!conversations_doctor_id_fkey(name, email)
-        `)
-        .or(`patient_id.eq.${userData.id},doctor_id.eq.${userData.id}`)
-        .order('updated_at', { ascending: false });
+        `).or(`patient_id.eq.${userData.id},doctor_id.eq.${userData.id}`).order('updated_at', { ascending: false });
 
       if (data) {
         const formatted = data.map((conv: any) => ({
@@ -88,14 +80,10 @@ export default function ChatWidget() {
     if (!selectedConversation || !supabase) return;
 
     const loadMessages = async () => {
-      const { data } = await supabase
-        .from('messages')
-        .select(`
+      const { data } = await supabase.from('messages').select(`
           *,
           sender:chat_users(name)
-        `)
-        .eq('conversation_id', selectedConversation)
-        .order('created_at', { ascending: true });
+        `).eq('conversation_id', selectedConversation).order('created_at', { ascending: true });
 
       if (data) {
         const formatted = data.map((msg: any) => ({
@@ -141,11 +129,7 @@ export default function ChatWidget() {
     const userEmail = session?.user?.email;
     if (!userEmail) return;
     
-    const { data: userData } = await supabase
-      .from('chat_users')
-      .select('id')
-      .eq('email', userEmail)
-      .single();
+    const { data: userData } = await supabase.from('chat_users').select('id').eq('email', userEmail).single();
 
     if (!userData) return;
 
