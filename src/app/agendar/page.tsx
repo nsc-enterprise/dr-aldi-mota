@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 // import ReCAPTCHA from 'react-google-recaptcha';
 import { GoogleSignInButton } from '@/components/GoogleSignInButton';
-import { TURBOPACK_CLIENT_BUILD_MANIFEST } from 'next/dist/shared/lib/constants';
 
 export default function AgendarCita() {
   const [enviado, setEnviado] = useState(false);
