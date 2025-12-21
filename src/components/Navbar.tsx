@@ -23,7 +23,16 @@ export function Navbar() {
                     ? 'bg-blue-50 text-blue-700'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
               >
-                Dashboard IA
+                🔬 Campaña Ultrasonidos
+              </Link>
+
+              <Link
+                href="/completo"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/completo')
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+              >
+                🏥 Formulario Completo
               </Link>
 
               <Link
@@ -32,25 +41,7 @@ export function Navbar() {
                     ? 'bg-blue-50 text-blue-700'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
               >
-                Pacientes
-              </Link>
-
-              <Link
-                href="/agendar"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/agendar')
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
-              >
-                Agendar Consulta
-              </Link>
-
-              <Link
-                href="/chat"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/chat')
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
-              >
-                Chat
+                👥 Dashboard
               </Link>
             </div>
           </div>

@@ -1,0 +1,36 @@
+[
+  {
+    "id": "SOL-1766320843757-r12tua8ck",
+    "fechaSolicitud": "2025-12-21T12:40:43.757Z",
+    "estado": "pendiente",
+    "datosPersonales": {
+      "nombres": "noe",
+      "apellidos": "Campaña",
+      "fechaNacimiento": "1990-01-01",
+      "genero": "otro",
+      "documentoIdentidad": "CAMPANA-1766320835794",
+      "tipoDocumento": "otro"
+    },
+    "motivoConsulta": {
+      "especialidad": "medicina_general",
+      "sintomas": "Solicitud de 💪 Ecografía Musculoesquelética (Músculos/Tendones)",
+      "tiempoEvolucion": "Campaña publicitaria",
+      "urgencia": "media",
+      "descripcionDetallada": "Paciente interesado en ecografia_musculoesqueletica - Origen: Campaña digital"
+    },
+    "antecedentesMedicos": {
+      "alergias": "",
+      "medicamentosActuales": "",
+      "cirugiasPrevias": "",
+      "enfermedadesCronicas": "",
+      "antecedenteFamiliar": ""
+    },
+    "contacto": {
+      "telefono": "984 2044965",
+      "email": "campana@drmota.com",
+      "direccion": "",
+      "ciudad": "",
+      "preferenciaContacto": "whatsapp"
+    }
+  }
+]

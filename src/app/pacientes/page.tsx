@@ -1,179 +1,349 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { Cita } from '@/lib/db';
+import { useEffect, useState } from 'react'
+import { SolicitudConsulta, EstadoSolicitud } from '@/types/medico'
 
-export default function PacientesPage() {
-  const [citas, setCitas] = useState<Cita[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [tempNote, setTempNote] = useState('');
+export default function DashboardMedico() {
+  const [solicitudes, setSolicitudes] = useState<SolicitudConsulta[]>([])
+  const [loading, setLoading] = useState(true)
+  const [filtroEstado, setFiltroEstado] = useState<EstadoSolicitud | 'todas'>('todas')
+  const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<SolicitudConsulta | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [tempNote, setTempNote] = useState('')
 
-  const fetchCitas = async () => {
+  // 🔄 CARGAR solicitudes
+  const cargarSolicitudes = async () => {
     try {
-      const res = await fetch('/api/citas/list');
-      if (res.ok) {
-        const data = await res.json();
-        setCitas(data);
+      const response = await fetch('/api/solicitudes')
+      if (response.ok) {
+        const data = await response.json()
+        setSolicitudes(data.data)
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('🚫 Error cargando:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  useEffect(() => {
-    fetchCitas();
-  }, []);
+  useEffect(() => { cargarSolicitudes() }, [])
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('¿Estás seguro de eliminar esta solicitud?')) return;
-
+  // 🔄 CAMBIAR estado
+  const cambiarEstado = async (id: string, nuevoEstado: EstadoSolicitud) => {
     try {
-      const res = await fetch(`/api/citas/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setCitas(citas.filter(c => c.id !== id));
-      }
-    } catch (error) {
-      console.error('Error deleting:', error);
-    }
-  };
-
-  const handleStatusChange = async (id: string, newStatus: Cita['estado']) => {
-    try {
-      const res = await fetch(`/api/citas/${id}`, {
-        method: 'PATCH',
+      const response = await fetch('/api/solicitudes', {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ estado: newStatus }),
-      });
-      
-      if (res.ok) {
-        setCitas(citas.map(c => c.id === id ? { ...c, estado: newStatus } : c));
+        body: JSON.stringify({ id, estado: nuevoEstado })
+      })
+
+      if (response.ok) {
+        setSolicitudes(prev => prev.map(s => s.id === id ? { ...s, estado: nuevoEstado } : s))
+        if (solicitudSeleccionada?.id === id) {
+          setSolicitudSeleccionada({ ...solicitudSeleccionada, estado: nuevoEstado })
+        }
       }
     } catch (error) {
-      console.error('Error updating status:', error);
+      console.error('🚫 Error actualizando:', error)
     }
-  };
+  }
 
-  const saveNote = async (id: string) => {
+  // 📝 GUARDAR nota
+  const guardarNota = async (id: string) => {
     try {
-      const res = await fetch(`/api/citas/${id}`, {
-        method: 'PATCH',
+      const response = await fetch('/api/solicitudes', {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notas: tempNote }),
-      });
+        body: JSON.stringify({ id, notas: tempNote })
+      })
       
-      if (res.ok) {
-        setCitas(citas.map(c => c.id === id ? { ...c, notas: tempNote } : c));
-        setEditingId(null);
+      if (response.ok) {
+        setSolicitudes(prev => prev.map(s => s.id === id ? { ...s, notas: tempNote } : s))
+        if (solicitudSeleccionada?.id === id) {
+          setSolicitudSeleccionada({ ...solicitudSeleccionada, notas: tempNote })
+        }
+        setEditingId(null)
       }
     } catch (error) {
-      console.error('Error saving note:', error);
+      console.error('🚫 Error guardando nota:', error)
     }
-  };
+  }
 
-  const getStatusColor = (status?: string) => {
-    switch (status) {
-      case 'contactado': return 'bg-yellow-100 text-yellow-800';
-      case 'agendado': return 'bg-blue-100 text-blue-800';
-      case 'cancelado': return 'bg-red-100 text-red-800';
-      case 'finalizado': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-green-100 text-green-800'; // pendiente
+  // 🗑️ ELIMINAR
+  const eliminar = async (id: string) => {
+    if (!confirm('¿Eliminar esta solicitud?')) return
+
+    try {
+      const response = await fetch(`/api/solicitudes?id=${id}`, { method: 'DELETE' })
+      if (response.ok) {
+        setSolicitudes(prev => prev.filter(s => s.id !== id))
+        setSolicitudSeleccionada(null)
+      }
+    } catch (error) {
+      console.error('🚫 Error eliminando:', error)
     }
-  };
+  }
+
+  // 🎨 COLORES
+  const getEstadoColor = (estado: EstadoSolicitud) => ({
+    pendiente: 'bg-yellow-100 text-yellow-800',
+    en_revision: 'bg-blue-100 text-blue-800',
+    contactado: 'bg-purple-100 text-purple-800',
+    cita_agendada: 'bg-green-100 text-green-800',
+    completado: 'bg-gray-100 text-gray-800',
+    cancelado: 'bg-red-100 text-red-800'
+  }[estado])
+
+  const getUrgenciaColor = (urgencia: string) => ({
+    baja: 'text-green-600',
+    media: 'text-yellow-600', 
+    alta: 'text-orange-600',
+    urgente: 'text-red-600 font-bold'
+  }[urgencia as keyof typeof getUrgenciaColor] || 'text-gray-600')
+
+  const solicitudesFiltradas = solicitudes.filter(s => 
+    filtroEstado === 'todas' || s.estado === filtroEstado
+  )
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-medico-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-azul-600"></div>
+      </div>
+    )
+  }
 
   return (
-    <main className="max-w-5xl mx-auto p-6">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Solicitudes de Pacientes</h1>
-        <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-          {citas.length} Total
-        </span>
+    <div className="min-h-screen bg-medico-50">
+      {/* 📋 HEADER */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-medico-900">Dashboard Médico</h1>
+              <p className="text-medico-600">Dr. Aldimir Mota - Solicitudes de Consulta</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-medico-600">Total: {solicitudes.length}</span>
+              <button onClick={cargarSolicitudes} className="btn-primary text-sm px-4 py-2">
+                🔄 Actualizar
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {loading ? (
-        <div className="text-center py-12 text-gray-500">Cargando pacientes...</div>
-      ) : citas.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
-          <p className="text-gray-500">No hay solicitudes registradas aún.</p>
-        </div>
-      ) : (
-        <div className="grid gap-4">
-          {citas.map((cita) => (
-            <div key={cita.id} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-bold text-lg text-gray-900">{cita.nombre}</h3>
-                    <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full capitalize ${getStatusColor(cita.estado)}`}>
-                      {cita.estado || 'pendiente'}
-                    </span>
-                  </div>
-                  
-                  <p className="text-gray-500 text-sm mb-2 flex items-center gap-2">
-                    📞 <a href={`tel:${cita.telefono}`} className="hover:text-blue-600 hover:underline">{cita.telefono}</a>
-                  </p>
-                  
-                  <p className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm mb-3">
-                    "{cita.motivo}"
-                  </p>
-
-                  {/* Sección de Notas */}
-                  <div className="mt-3">
-                    {editingId === cita.id ? (
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={tempNote}
-                          onChange={(e) => setTempNote(e.target.value)}
-                          placeholder="Añadir nota interna..."
-                          className="flex-1 text-sm border rounded px-2 py-1"
-                          autoFocus
-                        />
-                        <button onClick={() => saveNote(cita.id)} className="text-xs bg-blue-600 text-white px-2 rounded">Guardar</button>
-                        <button onClick={() => setEditingId(null)} className="text-xs text-gray-500 px-2">Cancelar</button>
-                      </div>
-                    ) : (
-                      <div 
-                        onClick={() => { setEditingId(cita.id); setTempNote(cita.notas || ''); }}
-                        className="text-sm text-gray-500 cursor-pointer hover:bg-gray-50 p-1 rounded border border-transparent hover:border-gray-200 flex items-center gap-2"
-                      >
-                        📝 {cita.notas ? <span className="text-gray-700">{cita.notas}</span> : <span className="italic text-gray-400">Añadir nota interna...</span>}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-end gap-2 min-w-[140px]">
-                  <span className="text-xs text-gray-400 mb-2">
-                    {new Date(cita.fecha_creacion).toLocaleDateString()}
-                  </span>
-                  
-                  <select 
-                    value={cita.estado || 'pendiente'}
-                    onChange={(e) => handleStatusChange(cita.id, e.target.value as any)}
-                    className="text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-1"
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* 📊 LISTA */}
+          <div className="lg:col-span-2">
+            {/* 🔍 FILTROS */}
+            <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setFiltroEstado('todas')}
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    filtroEstado === 'todas' ? 'bg-azul-600 text-white' : 'bg-medico-100 text-medico-700 hover:bg-medico-200'
+                  }`}
+                >
+                  Todas ({solicitudes.length})
+                </button>
+                {(['pendiente', 'en_revision', 'contactado', 'cita_agendada'] as EstadoSolicitud[]).map(estado => (
+                  <button
+                    key={estado}
+                    onClick={() => setFiltroEstado(estado)}
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      filtroEstado === estado ? 'bg-azul-600 text-white' : 'bg-medico-100 text-medico-700 hover:bg-medico-200'
+                    }`}
                   >
-                    <option value="pendiente">Pendiente</option>
-                    <option value="contactado">Contactado</option>
-                    <option value="agendado">Agendado</option>
-                    <option value="cancelado">Cancelado</option>
-                    <option value="finalizado">Finalizado</option>
-                  </select>
-
-                  <button 
-                    onClick={() => handleDelete(cita.id)}
-                    className="text-xs text-red-500 hover:text-red-700 hover:bg-red-50 px-2 py-1 rounded transition-colors mt-2"
-                  >
-                    Eliminar
+                    {estado.replace('_', ' ')} ({solicitudes.filter(s => s.estado === estado).length})
                   </button>
-                </div>
+                ))}
               </div>
             </div>
-          ))}
+
+            {/* 📋 SOLICITUDES */}
+            <div className="space-y-4">
+              {solicitudesFiltradas.length === 0 ? (
+                <div className="bg-white rounded-lg p-8 text-center">
+                  <p className="text-medico-500">No hay solicitudes</p>
+                </div>
+              ) : (
+                solicitudesFiltradas.map(solicitud => (
+                  <div
+                    key={solicitud.id}
+                    className={`bg-white rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
+                      solicitudSeleccionada?.id === solicitud.id ? 'ring-2 ring-azul-500' : ''
+                    }`}
+                    onClick={() => setSolicitudSeleccionada(solicitud)}
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h3 className="font-semibold text-medico-900">
+                          {solicitud.datosPersonales.nombres} {solicitud.datosPersonales.apellidos}
+                        </h3>
+                        <div className="flex items-center gap-3 text-sm text-medico-600 mt-1">
+                          <span>🏥 {solicitud.motivoConsulta.especialidad.replace('_', ' ')}</span>
+                          <span className={`${getUrgenciaColor(solicitud.motivoConsulta.urgencia)}`}>
+                            🚨 {solicitud.motivoConsulta.urgencia.toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getEstadoColor(solicitud.estado)}`}>
+                        {solicitud.estado.replace('_', ' ')}
+                      </span>
+                    </div>
+                    
+                    <div className="bg-medico-50 p-3 rounded mb-3">
+                      <p className="text-sm text-medico-700">
+                        <strong>Síntomas:</strong> {solicitud.motivoConsulta.sintomas}
+                      </p>
+                    </div>
+
+                    {/* 📝 NOTAS */}
+                    <div className="mb-3">
+                      {editingId === solicitud.id ? (
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={tempNote}
+                            onChange={(e) => setTempNote(e.target.value)}
+                            placeholder="Nota del doctor..."
+                            className="flex-1 text-sm input-field py-2"
+                            autoFocus
+                          />
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); guardarNota(solicitud.id); }}
+                            className="text-xs bg-azul-600 text-white px-3 py-2 rounded"
+                          >
+                            Guardar
+                          </button>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); setEditingId(null); }}
+                            className="text-xs text-medico-500 px-3 py-2"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      ) : (
+                        <div 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            setEditingId(solicitud.id); 
+                            setTempNote(solicitud.notas || ''); 
+                          }}
+                          className="text-sm text-medico-600 cursor-pointer hover:bg-medico-50 p-2 rounded"
+                        >
+                          📝 {solicitud.notas || 'Añadir nota...'}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex justify-between text-xs text-medico-500 border-t pt-3">
+                      <span>📞 {solicitud.contacto.telefono}</span>
+                      <span>📅 {new Date(solicitud.fechaSolicitud).toLocaleDateString('es-ES')}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* 📝 DETALLES */}
+          <div className="lg:col-span-1">
+            {solicitudSeleccionada ? (
+              <div className="bg-white rounded-lg p-6 sticky top-6">
+                <div className="flex justify-between items-start mb-4">
+                  <h2 className="text-lg font-semibold text-medico-900">Detalles</h2>
+                  <button
+                    onClick={() => eliminar(solicitudSeleccionada.id)}
+                    className="text-red-600 hover:text-red-800 text-sm"
+                  >
+                    🗑️ Eliminar
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {/* ESTADO */}
+                  <div>
+                    <label className="label-field">Estado</label>
+                    <select
+                      value={solicitudSeleccionada.estado}
+                      onChange={(e) => cambiarEstado(solicitudSeleccionada.id, e.target.value as EstadoSolicitud)}
+                      className="input-field text-sm"
+                    >
+                      <option value="pendiente">Pendiente</option>
+                      <option value="en_revision">En Revisión</option>
+                      <option value="contactado">Contactado</option>
+                      <option value="cita_agendada">Cita Agendada</option>
+                      <option value="completado">Completado</option>
+                      <option value="cancelado">Cancelado</option>
+                    </select>
+                  </div>
+
+                  {/* CONTACTO */}
+                  <div className="border-t pt-4">
+                    <h3 className="font-medium text-medico-900 mb-2">Contacto</h3>
+                    <div className="text-sm space-y-1">
+                      <p><strong>Tel:</strong> 
+                        <a href={`tel:${solicitudSeleccionada.contacto.telefono}`} className="text-azul-600 ml-1">
+                          {solicitudSeleccionada.contacto.telefono}
+                        </a>
+                      </p>
+                      <p><strong>Email:</strong> 
+                        <a href={`mailto:${solicitudSeleccionada.contacto.email}`} className="text-azul-600 ml-1">
+                          {solicitudSeleccionada.contacto.email}
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* MOTIVO */}
+                  <div className="border-t pt-4">
+                    <h3 className="font-medium text-medico-900 mb-2">Motivo</h3>
+                    <div className="text-sm space-y-2">
+                      <p><strong>Especialidad:</strong> {solicitudSeleccionada.motivoConsulta.especialidad.replace('_', ' ')}</p>
+                      <p><strong>Urgencia:</strong> 
+                        <span className={`ml-1 ${getUrgenciaColor(solicitudSeleccionada.motivoConsulta.urgencia)}`}>
+                          {solicitudSeleccionada.motivoConsulta.urgencia.toUpperCase()}
+                        </span>
+                      </p>
+                      <div className="bg-medico-50 p-3 rounded">
+                        <p><strong>Síntomas:</strong></p>
+                        <p>{solicitudSeleccionada.motivoConsulta.sintomas}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ANTECEDENTES */}
+                  {(solicitudSeleccionada.antecedentesMedicos.alergias || 
+                    solicitudSeleccionada.antecedentesMedicos.medicamentosActuales) && (
+                    <div className="border-t pt-4">
+                      <h3 className="font-medium text-medico-900 mb-2">Antecedentes</h3>
+                      <div className="text-sm space-y-2">
+                        {solicitudSeleccionada.antecedentesMedicos.alergias && (
+                          <div className="bg-red-50 p-2 rounded">
+                            <p><strong>⚠️ Alergias:</strong> {solicitudSeleccionada.antecedentesMedicos.alergias}</p>
+                          </div>
+                        )}
+                        {solicitudSeleccionada.antecedentesMedicos.medicamentosActuales && (
+                          <p><strong>💊 Medicamentos:</strong> {solicitudSeleccionada.antecedentesMedicos.medicamentosActuales}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white rounded-lg p-6 text-center">
+                <div className="text-medico-400 text-4xl mb-4">👩⚕️</div>
+                <p className="text-medico-500">Seleccione una solicitud para ver detalles</p>
+              </div>
+            )}
+          </div>
         </div>
-      )}
-    </main>
-  );
+      </div>
+    </div>
+  )
 }

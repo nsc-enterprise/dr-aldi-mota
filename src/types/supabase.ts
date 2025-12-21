@@ -1,151 +1,106 @@
-// Database types for Supabase
-// Defines the schema for the citas table
-
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+// 🏥 ESQUEMA MÉDICO UNIFICADO - La única fuente de verdad
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export interface Database {
   public: {
     Tables: {
-      citas: {
+      // 📋 TABLA PRINCIPAL: Solicitudes médicas completas
+      solicitudes_medicas: {
         Row: {
           id: string
-          nombre: string
+          // Metadatos
+          fecha_solicitud: string
+          estado: 'pendiente' | 'en_revision' | 'contactado' | 'cita_agendada' | 'completado' | 'cancelado'
+          // Datos personales
+          nombres: string
+          apellidos: string
+          fecha_nacimiento: string
+          genero: 'masculino' | 'femenino' | 'otro'
+          documento_identidad: string
+          tipo_documento: 'cedula' | 'pasaporte' | 'otro'
+          // Contacto
           telefono: string
-          motivo: string
-          fecha_creacion: string
-          estado: 'pendiente' | 'contactado' | 'agendado' | 'cancelado' | 'finalizado'
+          email: string
+          direccion: string | null
+          ciudad: string | null
+          preferencia_contacto: 'telefono' | 'email' | 'whatsapp'
+          // Motivo médico
+          especialidad: 'medicina_general' | 'cardiologia' | 'dermatologia' | 'ginecologia' | 'pediatria' | 'neurologia' | 'traumatologia' | 'psiquiatria' | 'oftalmologia' | 'otorrinolaringologia' | 'urologia' | 'endocrinologia'
+          sintomas: string
+          tiempo_evolucion: string
+          urgencia: 'baja' | 'media' | 'alta' | 'urgente'
+          descripcion_detallada: string | null
+          // Antecedentes
+          alergias: string | null
+          medicamentos_actuales: string | null
+          cirugias_previas: string | null
+          enfermedades_cronicas: string | null
+          antecedente_familiar: string | null
+          // Notas del doctor
           notas: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          nombre: string
+          fecha_solicitud?: string
+          estado?: 'pendiente' | 'en_revision' | 'contactado' | 'cita_agendada' | 'completado' | 'cancelado'
+          nombres: string
+          apellidos: string
+          fecha_nacimiento: string
+          genero: 'masculino' | 'femenino' | 'otro'
+          documento_identidad: string
+          tipo_documento?: 'cedula' | 'pasaporte' | 'otro'
           telefono: string
-          motivo: string
-          fecha_creacion?: string
-          estado?: 'pendiente' | 'contactado' | 'agendado' | 'cancelado' | 'finalizado'
+          email: string
+          direccion?: string | null
+          ciudad?: string | null
+          preferencia_contacto?: 'telefono' | 'email' | 'whatsapp'
+          especialidad: 'medicina_general' | 'cardiologia' | 'dermatologia' | 'ginecologia' | 'pediatria' | 'neurologia' | 'traumatologia' | 'psiquiatria' | 'oftalmologia' | 'otorrinolaringologia' | 'urologia' | 'endocrinologia'
+          sintomas: string
+          tiempo_evolucion: string
+          urgencia?: 'baja' | 'media' | 'alta' | 'urgente'
+          descripcion_detallada?: string | null
+          alergias?: string | null
+          medicamentos_actuales?: string | null
+          cirugias_previas?: string | null
+          enfermedades_cronicas?: string | null
+          antecedente_familiar?: string | null
           notas?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          nombre?: string
+          fecha_solicitud?: string
+          estado?: 'pendiente' | 'en_revision' | 'contactado' | 'cita_agendada' | 'completado' | 'cancelado'
+          nombres?: string
+          apellidos?: string
+          fecha_nacimiento?: string
+          genero?: 'masculino' | 'femenino' | 'otro'
+          documento_identidad?: string
+          tipo_documento?: 'cedula' | 'pasaporte' | 'otro'
           telefono?: string
-          motivo?: string
-          fecha_creacion?: string
-          estado?: 'pendiente' | 'contactado' | 'agendado' | 'cancelado' | 'finalizado'
+          email?: string
+          direccion?: string | null
+          ciudad?: string | null
+          preferencia_contacto?: 'telefono' | 'email' | 'whatsapp'
+          especialidad?: 'medicina_general' | 'cardiologia' | 'dermatologia' | 'ginecologia' | 'pediatria' | 'neurologia' | 'traumatologia' | 'psiquiatria' | 'oftalmologia' | 'otorrinolaringologia' | 'urologia' | 'endocrinologia'
+          sintomas?: string
+          tiempo_evolucion?: string
+          urgencia?: 'baja' | 'media' | 'alta' | 'urgente'
+          descripcion_detallada?: string | null
+          alergias?: string | null
+          medicamentos_actuales?: string | null
+          cirugias_previas?: string | null
+          enfermedades_cronicas?: string | null
+          antecedente_familiar?: string | null
           notas?: string | null
           created_at?: string
           updated_at?: string
         }
       }
-      chat_users: {
-        Row: {
-          id: string
-          email: string
-          nombre: string
-          avatar_url: string | null
-          role: 'patient' | 'doctor' | 'admin'
-          last_seen: string
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          email: string
-          nombre: string
-          avatar_url?: string | null
-          role?: 'patient' | 'doctor' | 'admin'
-          last_seen?: string
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          email?: string
-          nombre?: string
-          avatar_url?: string | null
-          role?: 'patient' | 'doctor' | 'admin'
-          last_seen?: string
-          created_at?: string
-        }
-      }
-      conversations: {
-        Row: {
-          id: string
-          patient_id: string
-          doctor_id: string
-          last_message: string | null
-          last_message_at: string
-          unread_count_patient: number
-          unread_count_doctor: number
-          status: 'active' | 'archived' | 'closed'
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          patient_id: string
-          doctor_id: string
-          last_message?: string | null
-          last_message_at?: string
-          unread_count_patient?: number
-          unread_count_doctor?: number
-          status?: 'active' | 'archived' | 'closed'
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          patient_id?: string
-          doctor_id?: string
-          last_message?: string | null
-          last_message_at?: string
-          unread_count_patient?: number
-          unread_count_doctor?: number
-          status?: 'active' | 'archived' | 'closed'
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      messages: {
-        Row: {
-          id: string
-          conversation_id: string
-          sender_id: string
-          content: string
-          type: 'text' | 'image' | 'file' | 'system'
-          is_read: boolean
-          read_at: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          conversation_id: string
-          sender_id: string
-          content: string
-          type?: 'text' | 'image' | 'file' | 'system'
-          is_read?: boolean
-          read_at?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          conversation_id?: string
-          sender_id?: string
-          content?: string
-          type?: 'text' | 'image' | 'file' | 'system'
-          is_read?: boolean
-          read_at?: string | null
-          created_at?: string
-        }
-      }
+
     }
     Views: {
       [_ in never]: never
