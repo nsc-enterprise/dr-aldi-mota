@@ -27,8 +27,8 @@ export function Navbar() {
               </Link>
 
               <Link
-                href="/completo"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/completo')
+                href="/agendar"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/agendar')
                     ? 'bg-blue-50 text-blue-700'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
               >

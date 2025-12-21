@@ -63,10 +63,25 @@ export default function AgendarCita() {
       // recaptcha: recaptchaRef.current?.getValue(),
     };
     try {
-      const res = await fetch('/api/citas', {
+      const res = await fetch('/api/solicitudes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          nombres: data.nombre.split(' ')[0] || data.nombre,
+          apellidos: data.nombre.split(' ').slice(1).join(' ') || 'Agendar',
+          fechaNacimiento: '1990-01-01',
+          genero: 'otro',
+          documentoIdentidad: 'AGENDAR-' + Date.now(),
+          tipoDocumento: 'otro',
+          telefono: data.telefono,
+          email: 'agendar@drmota.com',
+          preferenciaContacto: 'telefono',
+          especialidad: 'medicina_general',
+          sintomas: `Solicitud desde formulario agendar: ${data.motivo}`,
+          tiempoEvolucion: 'No especificado',
+          urgencia: 'media',
+          descripcionDetallada: `Motivo: ${data.motivo} - Origen: Formulario Agendar`
+        }),
       });
       if (res.ok) {
         setEnviado(true);
