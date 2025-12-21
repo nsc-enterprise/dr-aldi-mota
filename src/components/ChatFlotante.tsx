@@ -200,10 +200,14 @@ export default function ChatFlotante() {
                 🩺 Agendar
               </button>
               <button
-                onClick={() => setInputText('¿Dónde está ubicado el consultorio?')}
-                className="text-xs bg-medico-100 text-medico-700 px-3 py-1 rounded-full hover:bg-medico-200 transition-colors"
+                onClick={() => {
+                  const telefono = '18095551234'; // Número del Dr. Mota
+                  const mensaje = encodeURIComponent('Hola Dr. Mota, me interesa agendar una consulta de ultrasonido.');
+                  window.open(`https://wa.me/${telefono}?text=${mensaje}`, '_blank');
+                }}
+                className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full hover:bg-green-200 transition-colors"
               >
-                📍 Ubicación
+                💬 WhatsApp
               </button>
             </div>
           </div>

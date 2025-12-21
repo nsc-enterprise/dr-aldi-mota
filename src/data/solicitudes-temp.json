@@ -66,5 +66,74 @@
       "ciudad": "",
       "preferenciaContacto": "whatsapp"
     }
+  },
+  {
+    "id": "SOL-1766325571905-bgq9xlr0p",
+    "fechaSolicitud": "2025-12-21T13:59:31.905Z",
+    "estado": "pendiente",
+    "datosPersonales": {
+      "nombres": "sss",
+      "apellidos": "Campaña",
+      "fechaNacimiento": "1990-01-01",
+      "genero": "otro",
+      "documentoIdentidad": "CAMPANA-1766325571421",
+      "tipoDocumento": "otro"
+    },
+    "motivoConsulta": {
+      "especialidad": "medicina_general",
+      "sintomas": "Solicitud de 🩸 Ecografía Vascular (Arterias/Venas)",
+      "tiempoEvolucion": "Campaña publicitaria",
+      "urgencia": "media",
+      "descripcionDetallada": "Paciente interesado en ecografia_vascular - Origen: Campaña digital"
+    },
+    "antecedentesMedicos": {
+      "alergias": "",
+      "medicamentosActuales": "",
+      "cirugiasPrevias": "",
+      "enfermedadesCronicas": "",
+      "antecedenteFamiliar": ""
+    },
+    "contacto": {
+      "telefono": "2885435465",
+      "email": "campana@drmota.com",
+      "direccion": "",
+      "ciudad": "",
+      "preferenciaContacto": "whatsapp"
+    },
+    "notas": "atendido!"
+  },
+  {
+    "id": "SOL-1766326596238-nl9mvvt67",
+    "fechaSolicitud": "2025-12-21T14:16:36.238Z",
+    "estado": "pendiente",
+    "datosPersonales": {
+      "nombres": "zdcg",
+      "apellidos": "Campaña",
+      "fechaNacimiento": "1990-01-01",
+      "genero": "otro",
+      "documentoIdentidad": "CAMPANA-1766326595346",
+      "tipoDocumento": "otro"
+    },
+    "motivoConsulta": {
+      "especialidad": "medicina_general",
+      "sintomas": "Solicitud de 🦴 Ecografía Tiroidea (Cuello)",
+      "tiempoEvolucion": "Campaña publicitaria",
+      "urgencia": "media",
+      "descripcionDetallada": "Paciente interesado en ecografia_tiroidea - Origen: Campaña digital"
+    },
+    "antecedentesMedicos": {
+      "alergias": "",
+      "medicamentosActuales": "",
+      "cirugiasPrevias": "",
+      "enfermedadesCronicas": "",
+      "antecedenteFamiliar": ""
+    },
+    "contacto": {
+      "telefono": "2885435465",
+      "email": "campana@drmota.com",
+      "direccion": "",
+      "ciudad": "",
+      "preferenciaContacto": "whatsapp"
+    }
   }
 ]
