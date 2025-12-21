@@ -36,22 +36,12 @@ export default function FormularioCampana() {
     setIsSubmitting(true)
 
     try {
-      // 🚀 Enviar a la misma API pero con datos simplificados
+      // 🚀 Enviar datos simplificados para Supabase
       const solicitudCampana = {
-        nombres: formData.nombre.split(' ')[0] || formData.nombre,
-        apellidos: formData.nombre.split(' ').slice(1).join(' ') || 'Campaña',
-        fechaNacimiento: '1990-01-01',
-        genero: 'otro',
-        documentoIdentidad: 'CAMPANA-' + Date.now(),
-        tipoDocumento: 'otro',
+        nombre: formData.nombre,
         telefono: formData.telefono,
-        email: 'campana@drmota.com',
-        preferenciaContacto: formData.preferenciaContacto,
-        especialidad: 'medicina_general',
-        sintomas: `Solicitud de ${tiposUltrasonido.find(t => t.value === formData.tipoUltrasonido)?.label || 'ultrasonido'}`,
-        tiempoEvolucion: 'Campaña publicitaria',
-        urgencia: 'media',
-        descripcionDetallada: `Paciente interesado en ${formData.tipoUltrasonido} - Origen: Campaña digital`
+        motivo: tiposUltrasonido.find(t => t.value === formData.tipoUltrasonido)?.label || 'ultrasonido',
+        preferencia_contacto: formData.preferenciaContacto
       }
 
       const response = await fetch('/api/solicitudes', {
