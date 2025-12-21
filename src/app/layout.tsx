@@ -1,21 +1,40 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Navbar } from "@/components/Navbar";
+import { SessionProviderWrapper } from "./SessionProviderWrapper";
+import ChatWidget from "@/components/ChatWidget";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Dr. Aldimir Mota - Consulta Médica',
-  description: 'Solicitud de consulta médica especializada',
-}
+  title: "Doctor Aldimir Mota",
+  description: "Asistente Estratégico Proactivo",
+  manifest: "/manifest.webmanifest",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#2563eb",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="es">
-      <body className="min-h-screen">
-        {children}
+      <body className={`${inter.className} bg-gray-50 min-h-screen`}>
+        <SessionProviderWrapper>
+          <Navbar />
+          {children}
+          <ChatWidget />
+        </SessionProviderWrapper>
       </body>
     </html>
-  )
+  );
 }
