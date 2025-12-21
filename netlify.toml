@@ -1,5 +1,4 @@
 [build]
-  base = "doctor-aldimir-mota"
   command = "npm run build"
   publish = ".next"
 
