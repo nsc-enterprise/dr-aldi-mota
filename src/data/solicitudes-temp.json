@@ -135,5 +135,39 @@
       "ciudad": "",
       "preferenciaContacto": "whatsapp"
     }
+  },
+  {
+    "id": "SOL-1766328095087-biucw6m6d",
+    "fechaSolicitud": "2025-12-21T14:41:35.087Z",
+    "estado": "pendiente",
+    "datosPersonales": {
+      "nombres": "noe",
+      "apellidos": "Campaña",
+      "fechaNacimiento": "1990-01-01",
+      "genero": "otro",
+      "documentoIdentidad": "CAMPANA-1766328094285",
+      "tipoDocumento": "otro"
+    },
+    "motivoConsulta": {
+      "especialidad": "medicina_general",
+      "sintomas": "Solicitud de 🤱 Ecografía Obstétrica (Bebés)",
+      "tiempoEvolucion": "Campaña publicitaria",
+      "urgencia": "media",
+      "descripcionDetallada": "Paciente interesado en ecografia_obstetrica - Origen: Campaña digital"
+    },
+    "antecedentesMedicos": {
+      "alergias": "",
+      "medicamentosActuales": "",
+      "cirugiasPrevias": "",
+      "enfermedadesCronicas": "",
+      "antecedenteFamiliar": ""
+    },
+    "contacto": {
+      "telefono": "984 2044965",
+      "email": "campana@drmota.com",
+      "direccion": "",
+      "ciudad": "",
+      "preferenciaContacto": "whatsapp"
+    }
   }
 ]
