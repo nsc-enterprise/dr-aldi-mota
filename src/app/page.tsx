@@ -248,9 +248,21 @@ export default function FormularioCampana() {
             </div>
 
             <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg text-center">
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-sm mb-3">
                 <strong>100% Confidencial</strong> • <strong>Respuesta Inmediata</strong> 
               </p>
+              <div className="border-t border-gray-200 pt-3">
+                <p className="text-gray-600 text-sm mb-2">¿Necesitas completar tu historial médico completo?</p>
+                <Link 
+                  href="/agendar"
+                  className="inline-flex items-center text-azul-700 hover:text-azul-800 text-sm font-medium transition-colors"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Formulario Completo de Historial Médico
+                </Link>
+              </div>
             </div>
           </form>
         </div>
