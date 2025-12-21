@@ -1,38 +1,30 @@
-import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Navbar } from "@/components/Navbar";
-import { SessionProviderWrapper } from "./SessionProviderWrapper";
-
-const inter = Inter({ subsets: ["latin"] });
+import type { Metadata } from 'next'
+import './globals.css'
+import ChatFlotante from '@/components/ChatFlotante'
 
 export const metadata: Metadata = {
-  title: "Doctor Aldimir Mota",
-  description: "Asistente Estratégico Proactivo",
-  manifest: "/manifest.webmanifest",
-};
-
-export const viewport: Viewport = {
-  themeColor: "#2563eb",
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-};
+  title: 'Dr. Aldimir Mota - Consulta Médica',
+  description: 'Solicitud de consulta médica especializada',
+  manifest: '/manifest.json',
+  themeColor: '#2563eb',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="es">
-      <body className={`${inter.className} bg-gray-50 min-h-screen`}>
-        <SessionProviderWrapper>
-          <Navbar />
-          {children}
-        </SessionProviderWrapper>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+      </head>
+      <body className="min-h-screen">
+        {children}
+        <ChatFlotante />
       </body>
     </html>
-  );
+  )
 }

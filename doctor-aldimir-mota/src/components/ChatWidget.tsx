@@ -35,7 +35,8 @@ export default function ChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Chat disabled until Supabase is configured
-  const supabase = null;
+  // Keep typed as `any` so TypeScript doesn't infer `never` during build-time checks
+  const supabase: any = null;
 
   // Load conversations
   useEffect(() => {

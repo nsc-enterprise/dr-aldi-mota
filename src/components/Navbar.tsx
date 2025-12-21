@@ -23,16 +23,7 @@ export function Navbar() {
                     ? 'bg-blue-50 text-blue-700'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
               >
-                Dashboard IA
-              </Link>
-
-              <Link
-                href="/pacientes"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/pacientes')
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
-              >
-                Pacientes
+                🔬 Campaña Ultrasonidos
               </Link>
 
               <Link
@@ -41,16 +32,16 @@ export function Navbar() {
                     ? 'bg-blue-50 text-blue-700'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
               >
-                Agendar Consulta
+                🏥 Formulario Completo
               </Link>
 
               <Link
-                href="/chat"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/chat')
+                href="/pacientes"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/pacientes')
                     ? 'bg-blue-50 text-blue-700'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
               >
-                Chat
+                👥 Dashboard
               </Link>
             </div>
           </div>

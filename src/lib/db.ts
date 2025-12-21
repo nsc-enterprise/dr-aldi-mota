@@ -49,9 +49,9 @@ export const db = {
 
     try {
       const { data, error } = await supabase
-        .from('citas')
+        .from('solicitudes_pacientes')
         .select('*')
-        .order('fecha_creacion', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data || [];
@@ -73,12 +73,12 @@ export const db = {
 
     try {
       const { data, error } = await supabase
-        .from('citas')
+        .from('solicitudes_pacientes')
         .insert([
           {
             nombre: cita.nombre,
             telefono: cita.telefono,
-            motivo: cita.motivo,
+            tipo_ultrasonido: cita.motivo,
             estado: 'pendiente'
           }
         ])
