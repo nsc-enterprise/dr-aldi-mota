@@ -189,25 +189,25 @@ export default function ChatFlotante() {
             <div className="flex flex-wrap gap-2 mt-3">
               <button
                 onClick={() => setInputText('¿Cuáles son los horarios de atención?')}
-                className="text-xs bg-medico-100 text-medico-700 px-3 py-1 rounded-full hover:bg-medico-200 transition-colors"
+                className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
               >
-                📅 Horarios
+                Horarios
               </button>
               <button
                 onClick={() => setInputText('Quiero agendar una cita')}
-                className="text-xs bg-medico-100 text-medico-700 px-3 py-1 rounded-full hover:bg-medico-200 transition-colors"
+                className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
               >
-                🩺 Agendar
+                Agendar
               </button>
               <button
                 onClick={() => {
-                  const telefono = '18095551234'; // Número del Dr. Mota
+                  const telefono = '2293690042';
                   const mensaje = encodeURIComponent('Hola Dr. Mota, me interesa agendar una consulta de ultrasonido.');
                   window.open(`https://wa.me/${telefono}?text=${mensaje}`, '_blank');
                 }}
                 className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full hover:bg-green-200 transition-colors"
               >
-                💬 WhatsApp
+                WhatsApp
               </button>
             </div>
           </div>

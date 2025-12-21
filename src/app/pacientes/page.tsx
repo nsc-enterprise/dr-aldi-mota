@@ -1,13 +1,27 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { SolicitudConsulta, EstadoSolicitud } from '@/types/medico'
+
+// Tipo simplificado para Supabase
+interface SolicitudSupabase {
+  id: string
+  nombre: string
+  telefono: string
+  tipo_ultrasonido: string
+  preferencia_contacto: string
+  estado: 'pendiente' | 'en_revision' | 'contactado' | 'cita_agendada' | 'completado' | 'cancelado'
+  notas_doctor?: string
+  created_at: string
+  fecha_solicitud?: string
+}
+
+type EstadoSolicitud = SolicitudSupabase['estado']
 
 export default function DashboardMedico() {
-  const [solicitudes, setSolicitudes] = useState<SolicitudConsulta[]>([])
+  const [solicitudes, setSolicitudes] = useState<SolicitudSupabase[]>([])
   const [loading, setLoading] = useState(true)
   const [filtroEstado, setFiltroEstado] = useState<EstadoSolicitud | 'todas'>('todas')
-  const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<SolicitudConsulta | null>(null)
+  const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<SolicitudSupabase | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [tempNote, setTempNote] = useState('')
 
@@ -54,13 +68,13 @@ export default function DashboardMedico() {
       const response = await fetch('/api/solicitudes', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, notas: tempNote })
+        body: JSON.stringify({ id, notas_doctor: tempNote })
       })
       
       if (response.ok) {
-        setSolicitudes(prev => prev.map(s => s.id === id ? { ...s, notas: tempNote } : s))
+        setSolicitudes(prev => prev.map(s => s.id === id ? { ...s, notas_doctor: tempNote } : s))
         if (solicitudSeleccionada?.id === id) {
-          setSolicitudSeleccionada({ ...solicitudSeleccionada, notas: tempNote })
+          setSolicitudSeleccionada({ ...solicitudSeleccionada, notas_doctor: tempNote })
         }
         setEditingId(null)
       }
@@ -181,12 +195,12 @@ export default function DashboardMedico() {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h3 className="font-semibold text-medico-900">
-                          {solicitud.datosPersonales.nombres} {solicitud.datosPersonales.apellidos}
+                          {solicitud.nombre}
                         </h3>
                         <div className="flex items-center gap-3 text-sm text-medico-600 mt-1">
-                          <span>🏥 {solicitud.motivoConsulta.especialidad.replace('_', ' ')}</span>
-                          <span className={`${getUrgenciaColor(solicitud.motivoConsulta.urgencia)}`}>
-                            🚨 {solicitud.motivoConsulta.urgencia.toUpperCase()}
+                          <span>🏥 {solicitud.tipo_ultrasonido}</span>
+                          <span className="text-yellow-600">
+                            🚨 MEDIA
                           </span>
                         </div>
                       </div>
@@ -197,7 +211,7 @@ export default function DashboardMedico() {
                     
                     <div className="bg-medico-50 p-3 rounded mb-3">
                       <p className="text-sm text-medico-700">
-                        <strong>Síntomas:</strong> {solicitud.motivoConsulta.sintomas}
+                        <strong>Tipo:</strong> {solicitud.tipo_ultrasonido}
                       </p>
                     </div>
 
@@ -231,18 +245,18 @@ export default function DashboardMedico() {
                           onClick={(e) => { 
                             e.stopPropagation(); 
                             setEditingId(solicitud.id); 
-                            setTempNote(solicitud.notas || ''); 
+                            setTempNote(solicitud.notas_doctor || ''); 
                           }}
                           className="text-sm text-medico-600 cursor-pointer hover:bg-medico-50 p-2 rounded"
                         >
-                          📝 {solicitud.notas || 'Añadir nota...'}
+                          📝 {solicitud.notas_doctor || 'Añadir nota...'}
                         </div>
                       )}
                     </div>
                     
                     <div className="flex justify-between text-xs text-medico-500 border-t pt-3">
-                      <span>📞 {solicitud.contacto.telefono}</span>
-                      <span>📅 {new Date(solicitud.fechaSolicitud).toLocaleDateString('es-ES')}</span>
+                      <span>📞 {solicitud.telefono}</span>
+                      <span>📅 {new Date(solicitud.created_at || solicitud.fecha_solicitud).toLocaleDateString('es-ES')}</span>
                     </div>
                   </div>
                 ))
@@ -287,52 +301,24 @@ export default function DashboardMedico() {
                     <h3 className="font-medium text-medico-900 mb-2">Contacto</h3>
                     <div className="text-sm space-y-1">
                       <p><strong>Tel:</strong> 
-                        <a href={`tel:${solicitudSeleccionada.contacto.telefono}`} className="text-azul-600 ml-1">
-                          {solicitudSeleccionada.contacto.telefono}
+                        <a href={`tel:${solicitudSeleccionada.telefono}`} className="text-azul-600 ml-1">
+                          {solicitudSeleccionada.telefono}
                         </a>
                       </p>
-                      <p><strong>Email:</strong> 
-                        <a href={`mailto:${solicitudSeleccionada.contacto.email}`} className="text-azul-600 ml-1">
-                          {solicitudSeleccionada.contacto.email}
-                        </a>
-                      </p>
+                      <p><strong>Preferencia:</strong> {solicitudSeleccionada.preferencia_contacto}</p>
                     </div>
                   </div>
 
-                  {/* MOTIVO */}
+                  {/* TIPO DE ULTRASONIDO */}
                   <div className="border-t pt-4">
-                    <h3 className="font-medium text-medico-900 mb-2">Motivo</h3>
+                    <h3 className="font-medium text-medico-900 mb-2">Solicitud</h3>
                     <div className="text-sm space-y-2">
-                      <p><strong>Especialidad:</strong> {solicitudSeleccionada.motivoConsulta.especialidad.replace('_', ' ')}</p>
-                      <p><strong>Urgencia:</strong> 
-                        <span className={`ml-1 ${getUrgenciaColor(solicitudSeleccionada.motivoConsulta.urgencia)}`}>
-                          {solicitudSeleccionada.motivoConsulta.urgencia.toUpperCase()}
-                        </span>
-                      </p>
                       <div className="bg-medico-50 p-3 rounded">
-                        <p><strong>Síntomas:</strong></p>
-                        <p>{solicitudSeleccionada.motivoConsulta.sintomas}</p>
+                        <p><strong>Tipo:</strong></p>
+                        <p>{solicitudSeleccionada.tipo_ultrasonido}</p>
                       </div>
                     </div>
                   </div>
-
-                  {/* ANTECEDENTES */}
-                  {(solicitudSeleccionada.antecedentesMedicos.alergias || 
-                    solicitudSeleccionada.antecedentesMedicos.medicamentosActuales) && (
-                    <div className="border-t pt-4">
-                      <h3 className="font-medium text-medico-900 mb-2">Antecedentes</h3>
-                      <div className="text-sm space-y-2">
-                        {solicitudSeleccionada.antecedentesMedicos.alergias && (
-                          <div className="bg-red-50 p-2 rounded">
-                            <p><strong>⚠️ Alergias:</strong> {solicitudSeleccionada.antecedentesMedicos.alergias}</p>
-                          </div>
-                        )}
-                        {solicitudSeleccionada.antecedentesMedicos.medicamentosActuales && (
-                          <p><strong>💊 Medicamentos:</strong> {solicitudSeleccionada.antecedentesMedicos.medicamentosActuales}</p>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             ) : (
