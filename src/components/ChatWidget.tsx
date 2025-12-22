@@ -35,8 +35,7 @@ export default function ChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Chat disabled until Supabase is configured
-  // Keep typed as `any` so TypeScript doesn't infer `never` during build-time checks
-  const supabase: any = null;
+  const supabase: null = null;
 
   // Load conversations
   useEffect(() => {
@@ -57,14 +56,14 @@ export default function ChatWidget() {
         `).or(`patient_id.eq.${userData.id},doctor_id.eq.${userData.id}`).order('updated_at', { ascending: false });
 
       if (data) {
-        const formatted = data.map((conv: any) => ({
+        const formatted = data.map((conv: Conversation & { patient?: { name: string }; doctor?: { name: string } }) => ({
           ...conv,
           patient_name: conv.patient?.name,
           doctor_name: conv.doctor?.name,
         }));
         setConversations(formatted);
         
-        const total = formatted.reduce((sum: number, conv: any) => 
+        const total = formatted.reduce((sum: number, conv: Conversation) => 
           sum + (conv.unread_count || 0), 0
         );
         setUnreadTotal(total);
@@ -87,7 +86,7 @@ export default function ChatWidget() {
         `).eq('conversation_id', selectedConversation).order('created_at', { ascending: true });
 
       if (data) {
-        const formatted = data.map((msg: any) => ({
+        const formatted = data.map((msg: Message & { sender?: { name: string } }) => ({
           ...msg,
           sender_name: msg.sender?.name,
         }));
@@ -108,7 +107,7 @@ export default function ChatWidget() {
           table: 'messages',
           filter: `conversation_id=eq.${selectedConversation}`,
         },
-        (payload: any) => {
+        (payload: { new: Message }) => {
           setMessages((prev) => [...prev, payload.new]);
         }
       )
