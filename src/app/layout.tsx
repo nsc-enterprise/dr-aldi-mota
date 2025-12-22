@@ -14,8 +14,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className="min-h-screen">
-        {children}
+      <body className="min-h-screen border-4 border-blue-200">
+        <div className="min-h-screen border-2 border-blue-100 m-1">
+          {children}
+        </div>
         <ChatFlotante />
       </body>
     </html>
