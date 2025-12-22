@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Cita } from '@/lib/db';
+import { Cita } from '@/lib/localDb';
 
 export const dynamic = 'force-dynamic';
 
