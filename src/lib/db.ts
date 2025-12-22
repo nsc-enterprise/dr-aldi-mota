@@ -111,12 +111,20 @@ export const db = {
 
     try {
       const { data, error } = await getSupabase()
-        .from('citas')
+        .from('solicitudes_pacientes')
         .select('*')
-        .order('fecha_creacion', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      return (data || []).map(item => ({
+        id: item.id,
+        nombre: item.nombre,
+        telefono: item.telefono,
+        motivo: item.motivo || 'Consulta médica',
+        fecha_creacion: item.created_at,
+        estado: item.estado || 'pendiente',
+        notas: item.notas
+      }));
     } catch (error) {
       console.error('Error fetching citas:', error);
       return [];
@@ -130,21 +138,29 @@ export const db = {
    */
   add: async (cita: Omit<Cita, 'id' | 'fecha_creacion' | 'estado'>) => {
     try {
-      const newCita: Database['public']['Tables']['citas']['Insert'] = {
+      const newCita = {
         nombre: cita.nombre,
         telefono: cita.telefono,
         motivo: cita.motivo,
         estado: 'pendiente'
       };
       
-      const { data, error } = await (getSupabase()
-        .from('citas') as any)
+      const { data, error } = await getSupabase()
+        .from('solicitudes_pacientes')
         .insert([newCita])
         .select()
         .single();
 
       if (error) throw error;
-      return data as Cita;
+      return {
+        id: data.id,
+        nombre: data.nombre,
+        telefono: data.telefono,
+        motivo: data.motivo,
+        fecha_creacion: data.created_at,
+        estado: data.estado,
+        notas: data.notas
+      } as Cita;
     } catch (error) {
       console.error('Error adding cita:', error);
       throw error;
@@ -159,17 +175,23 @@ export const db = {
    */
   update: async (id: string, updates: Partial<Cita>) => {
     try {
-      const updateData: Database['public']['Tables']['citas']['Update'] = updates;
-      
-      const { data, error } = await (getSupabase()
-        .from('citas') as any)
-        .update(updateData)
+      const { data, error } = await getSupabase()
+        .from('solicitudes_pacientes')
+        .update(updates)
         .eq('id', id)
         .select()
         .single();
 
       if (error) throw error;
-      return data as Cita;
+      return {
+        id: data.id,
+        nombre: data.nombre,
+        telefono: data.telefono,
+        motivo: data.motivo,
+        fecha_creacion: data.created_at,
+        estado: data.estado,
+        notas: data.notas
+      } as Cita;
     } catch (error) {
       console.error('Error updating cita:', error);
       return null;
@@ -184,7 +206,7 @@ export const db = {
   delete: async (id: string) => {
     try {
       const { error } = await getSupabase()
-        .from('citas')
+        .from('solicitudes_pacientes')
         .delete()
         .eq('id', id);
 
@@ -208,9 +230,9 @@ export const db = {
 
     try {
       const { data, error } = await getSupabase()
-        .from('citas')
+        .from('solicitudes_pacientes')
         .select('*')
-        .order('fecha_creacion', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(1)
         .single();
 
@@ -221,7 +243,15 @@ export const db = {
         }
         throw error;
       }
-      return data as Cita;
+      return {
+        id: data.id,
+        nombre: data.nombre,
+        telefono: data.telefono,
+        motivo: data.motivo,
+        fecha_creacion: data.created_at,
+        estado: data.estado,
+        notas: data.notas
+      } as Cita;
     } catch (error) {
       console.error('Error fetching last cita:', error);
       return null;

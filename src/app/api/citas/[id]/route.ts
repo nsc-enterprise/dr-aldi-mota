@@ -1,6 +1,5 @@
-// @ts-ignore
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db } from '@/lib/localDb';
 
 export async function DELETE(
   request: Request,
@@ -16,6 +15,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Cita no encontrada' }, { status: 404 });
     }
   } catch (error) {
+    console.error('Error deleting cita:', error);
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
   }
 }
@@ -36,6 +36,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Cita no encontrada' }, { status: 404 });
     }
   } catch (error) {
+    console.error('Error updating cita:', error);
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
   }
 }
