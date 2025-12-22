@@ -116,7 +116,7 @@ export const db = {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return (data || []).map(item => ({
+      return (data || []).map((item: any) => ({
         id: item.id,
         nombre: item.nombre,
         telefono: item.telefono,
@@ -152,14 +152,15 @@ export const db = {
         .single();
 
       if (error) throw error;
+      const result: any = data;
       return {
-        id: data.id,
-        nombre: data.nombre,
-        telefono: data.telefono,
-        motivo: data.motivo,
-        fecha_creacion: data.created_at,
-        estado: data.estado,
-        notas: data.notas
+        id: result.id,
+        nombre: result.nombre,
+        telefono: result.telefono,
+        motivo: result.motivo,
+        fecha_creacion: result.created_at,
+        estado: result.estado,
+        notas: result.notas
       } as Cita;
     } catch (error) {
       console.error('Error adding cita:', error);
@@ -183,14 +184,15 @@ export const db = {
         .single();
 
       if (error) throw error;
+      const result: any = data;
       return {
-        id: data.id,
-        nombre: data.nombre,
-        telefono: data.telefono,
-        motivo: data.motivo,
-        fecha_creacion: data.created_at,
-        estado: data.estado,
-        notas: data.notas
+        id: result.id,
+        nombre: result.nombre,
+        telefono: result.telefono,
+        motivo: result.motivo,
+        fecha_creacion: result.created_at,
+        estado: result.estado,
+        notas: result.notas
       } as Cita;
     } catch (error) {
       console.error('Error updating cita:', error);
@@ -238,19 +240,19 @@ export const db = {
 
       if (error) {
         if (error.code === 'PGRST116') {
-          // No rows returned - this is expected when table is empty
           return null;
         }
         throw error;
       }
+      const result: any = data;
       return {
-        id: data.id,
-        nombre: data.nombre,
-        telefono: data.telefono,
-        motivo: data.motivo,
-        fecha_creacion: data.created_at,
-        estado: data.estado,
-        notas: data.notas
+        id: result.id,
+        nombre: result.nombre,
+        telefono: result.telefono,
+        motivo: result.motivo,
+        fecha_creacion: result.created_at,
+        estado: result.estado,
+        notas: result.notas
       } as Cita;
     } catch (error) {
       console.error('Error fetching last cita:', error);
