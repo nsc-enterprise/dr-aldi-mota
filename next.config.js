@@ -11,7 +11,16 @@ const nextConfig = {
       }
     }
     return config
-  }
+  },
+  async redirects() {
+    return [
+      {
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
