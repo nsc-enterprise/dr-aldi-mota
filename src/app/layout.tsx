@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'Dr. Aldimir Mota - Consulta Médica',
@@ -15,6 +16,7 @@ export default function RootLayout({
     <html lang="es">
       <body className="min-h-screen">
         {children}
+        <Footer />
       </body>
     </html>
   )
