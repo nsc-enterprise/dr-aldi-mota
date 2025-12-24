@@ -18,6 +18,7 @@ interface AIResponse {
   titulo: string
   contenido: string
   fuente: string
+  recomendaciones?: any[]
 }
 
 export default function PanelMedico() {
