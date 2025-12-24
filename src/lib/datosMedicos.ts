@@ -97,27 +97,38 @@ export async function poblarDatosSimulados() {
   }
 }
 
+// Interfaz para paciente
+interface Paciente {
+  id?: string
+  nombre: string
+  telefono: string
+  motivo: string
+  estado?: string
+  notas?: string
+  fecha_creacion?: string
+}
+
 // Análisis inteligente para el asistente IA
-export function analizarDatosMedicos(pacientes: any[]) {
+export function analizarDatosMedicos(pacientes: Paciente[]) {
   const analisis = {
-    casosUrgentes: pacientes.filter(p => 
+    casosUrgentes: pacientes.filter((p: Paciente) => 
       p.motivo.toLowerCase().includes('urgente') ||
       p.motivo.toLowerCase().includes('dolor') ||
       p.motivo.toLowerCase().includes('torácico')
     ),
     
-    seguimientosEspeciales: pacientes.filter(p =>
+    seguimientosEspeciales: pacientes.filter((p: Paciente) =>
       p.motivo.toLowerCase().includes('control') ||
       p.motivo.toLowerCase().includes('seguimiento')
     ),
     
-    embarazadas: pacientes.filter(p =>
+    embarazadas: pacientes.filter((p: Paciente) =>
       p.motivo.toLowerCase().includes('obstétrica') ||
       p.motivo.toLowerCase().includes('embarazo') ||
       p.motivo.toLowerCase().includes('prenatal')
     ),
     
-    pendientesPrioritarios: pacientes.filter(p => 
+    pendientesPrioritarios: pacientes.filter((p: Paciente) => 
       p.estado === 'pendiente' && (
         p.motivo.toLowerCase().includes('dolor') ||
         p.motivo.toLowerCase().includes('urgente')
@@ -136,7 +147,7 @@ export function generarRecomendacionesIA(analisis: any) {
     recomendaciones.push({
       tipo: 'urgente',
       titulo: `⚠️ ${analisis.casosUrgentes.length} Caso(s) Urgente(s)`,
-      contenido: `Pacientes con síntomas que requieren atención prioritaria: ${analisis.casosUrgentes.map(p => p.nombre).join(', ')}`,
+      contenido: `Pacientes con síntomas que requieren atención prioritaria: ${analisis.casosUrgentes.map((p: Paciente) => p.nombre).join(', ')}`,
       accion: 'Contactar inmediatamente para evaluación'
     })
   }
