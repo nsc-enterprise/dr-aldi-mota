@@ -1,0 +1,4 @@
+id,paciente_id,fecha_cita,hora_cita,tipo_consulta,estado_cita,notas_medicas,diagnostico,tratamiento,proxima_cita,created_at,updated_at
+1,1,2024-12-25,09:00:00,Ecografía Obstétrica,programada,Paciente en semana 12 de embarazo,Embarazo normal,Control prenatal mensual,2025-01-25,2024-12-22 10:00:00,2024-12-22 10:00:00
+2,2,2024-12-26,10:30:00,Ecografía Abdominal,programada,Evaluar dolor en cuadrante superior derecho,Pendiente,Pendiente,2024-12-26,2024-12-22 11:30:00,2024-12-22 11:30:00
+3,3,2024-12-27,14:00:00,Ecocardiograma,programada,Control rutinario función cardíaca,Pendiente,Pendiente,2025-06-27,2024-12-22 14:15:00,2024-12-22 14:15:00

@@ -1,0 +1,4 @@
+id,paciente_id,alergias,medicamentos_actuales,cirugias_previas,enfermedades_cronicas,antecedentes_familiares,grupo_sanguineo,peso,altura,presion_arterial,created_at,updated_at
+1,1,Ninguna conocida,Ácido fólico 400mg,Ninguna,Ninguna,Diabetes materna,O+,65,165,120/80,2024-12-22 10:00:00,2024-12-22 10:00:00
+2,2,Penicilina,Omeprazol 20mg,Apendicectomía 2010,Gastritis crónica,Hipertensión paterna,A+,78,175,130/85,2024-12-22 11:30:00,2024-12-22 11:30:00
+3,3,Aspirina,Losartán 50mg,Ninguna,Hipertensión arterial,Cardiopatía familiar,B+,70,160,140/90,2024-12-22 14:15:00,2024-12-22 14:15:00

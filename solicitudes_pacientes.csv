@@ -1,0 +1,4 @@
+id,nombre,apellidos,telefono,email,motivo,tipo_ultrasonido,estado,notas,preferencia_contacto,fecha_nacimiento,genero,direccion,ciudad,created_at,updated_at
+1,María González,López,2293690042,maria.gonzalez@email.com,Ecografía Obstétrica,ecografia_obstetrica,pendiente,Primera consulta de embarazo,whatsapp,1990-05-15,femenino,Calle Principal 123,Tres Valles,2024-12-22 10:00:00,2024-12-22 10:00:00
+2,Carlos Hernández,Martínez,2293690043,carlos.hernandez@email.com,Ecografía Abdominal,ecografia_abdominal,contactado,Dolor abdominal recurrente,telefono,1985-08-20,masculino,Av. Independencia 456,Tres Valles,2024-12-22 11:30:00,2024-12-22 12:00:00
+3,Ana Rodríguez,Pérez,2293690044,ana.rodriguez@email.com,Ecocardiograma,ecografia_cardiaca,agendado,Control cardiológico anual,whatsapp,1978-12-03,femenino,Colonia Centro 789,Tres Valles,2024-12-22 14:15:00,2024-12-22 15:00:00
