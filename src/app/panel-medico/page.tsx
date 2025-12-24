@@ -32,6 +32,8 @@ export default function PanelMedico() {
     totalPacientes: 0
   })
 
+  const [isLoadingData, setIsLoadingData] = useState(false)
+
   // Contraseña simple (cambiar por algo más seguro después)
   const PANEL_PASSWORD = 'doctor2024'
 
@@ -42,6 +44,27 @@ export default function PanelMedico() {
       loadData()
     } else {
       alert('Contraseña incorrecta')
+    }
+  }
+
+  const poblarDatosSimulados = async () => {
+    setIsLoadingData(true)
+    try {
+      const response = await fetch('/api/poblar-datos', {
+        method: 'POST'
+      })
+      const result = await response.json()
+      
+      if (result.success) {
+        alert('✅ Datos simulados agregados exitosamente')
+        loadData() // Recargar datos
+      } else {
+        alert('❌ Error al agregar datos simulados')
+      }
+    } catch (error) {
+      alert('❌ Error de conexión')
+    } finally {
+      setIsLoadingData(false)
     }
   }
 
@@ -172,12 +195,21 @@ export default function PanelMedico() {
               <h1 className="text-2xl font-bold text-gray-900">Panel Médico</h1>
               <p className="text-gray-600">Dr. Aldimir Mota - Sistema de Gestión</p>
             </div>
-            <button
-              onClick={() => setIsAuthenticated(false)}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors"
-            >
-              Cerrar Sesión
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={poblarDatosSimulados}
+                disabled={isLoadingData}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors disabled:opacity-50"
+              >
+                {isLoadingData ? 'Cargando...' : '📊 Datos Demo'}
+              </button>
+              <button
+                onClick={() => setIsAuthenticated(false)}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -244,10 +276,25 @@ export default function PanelMedico() {
               </div>
               
               {aiResponse && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h3 className="font-semibold text-blue-900 mb-2">{aiResponse.titulo}</h3>
-                  <p className="text-blue-800 text-sm mb-2">{aiResponse.contenido}</p>
-                  <p className="text-xs text-blue-600">Fuente: {aiResponse.fuente}</p>
+                <div className="space-y-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-blue-900 mb-2">{aiResponse.titulo}</h3>
+                    <p className="text-blue-800 text-sm mb-2 whitespace-pre-line">{aiResponse.contenido}</p>
+                    <p className="text-xs text-blue-600">Fuente: {aiResponse.fuente}</p>
+                  </div>
+                  
+                  {aiResponse.recomendaciones && aiResponse.recomendaciones.length > 1 && (
+                    <div className="space-y-2">
+                      <h4 className="font-medium text-gray-900 text-sm">Recomendaciones Adicionales:</h4>
+                      {aiResponse.recomendaciones.slice(1).map((rec, index) => (
+                        <div key={index} className="bg-gray-50 border border-gray-200 rounded p-3">
+                          <h5 className="font-medium text-gray-800 text-sm">{rec.titulo}</h5>
+                          <p className="text-gray-700 text-xs mt-1">{rec.contenido}</p>
+                          <p className="text-gray-600 text-xs mt-1 italic">{rec.accion}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

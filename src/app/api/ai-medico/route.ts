@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/localDb';
+import { db } from '@/lib/db';
+import { analizarDatosMedicos, generarRecomendacionesIA } from '@/lib/datosMedicos';
 
 // Definición de tipos
 interface OutputAEP {
@@ -8,6 +9,7 @@ interface OutputAEP {
     contenido: string;
     referencia?: string;
     fuente: string;
+    recomendaciones?: any[];
 }
 
 export async function POST(request: Request) {
@@ -15,13 +17,28 @@ export async function POST(request: Request) {
         const body = await request.json()
         const { tipo } = body
         
-        const ultimaCita = await db.getLast();
+        // Obtener todos los pacientes para análisis completo
+        const todosPacientes = await db.getAll();
+        const ultimaCita = todosPacientes[0]; // Más reciente
 
         let response: OutputAEP;
 
         // Respuestas específicas para asistente médico
         if (tipo === 'asistente_medico') {
-            if (ultimaCita) {
+            // Análisis inteligente de todos los datos
+            const analisis = analizarDatosMedicos(todosPacientes);
+            const recomendaciones = generarRecomendacionesIA(analisis);
+            
+            if (recomendaciones.length > 0) {
+                const recPrincipal = recomendaciones[0];
+                response = {
+                    tipo_accion: recPrincipal.tipo === 'urgente' ? "alerta_anticipatoria" : "micro_tarea",
+                    titulo: recPrincipal.titulo,
+                    contenido: `${recPrincipal.contenido}\n\n💡 Acción recomendada: ${recPrincipal.accion}`,
+                    fuente: "Asistente Médico IA - Análisis Inteligente",
+                    recomendaciones: recomendaciones
+                };
+            } else if (ultimaCita) {
                 const esUrgente = ultimaCita.motivo.toLowerCase().includes('dolor') || 
                                 ultimaCita.motivo.toLowerCase().includes('urgente') ||
                                 ultimaCita.motivo.toLowerCase().includes('emergencia');
