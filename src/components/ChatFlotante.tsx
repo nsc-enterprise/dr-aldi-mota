@@ -53,11 +53,43 @@ export default function ChatFlotante() {
     }
 
     setMensajes(prev => [...prev, nuevoMensaje])
+    const mensajeUsuario = inputText
     setInputText('')
     setIsTyping(true)
 
-    // 🤖 Simular respuesta del asistente
-    setTimeout(() => {
+    // 🤖 Consultar asistente público (seguro)
+    try {
+      const response = await fetch('/api/asistente-publico', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          consulta: mensajeUsuario,
+          contexto: 'chat_publico' 
+        })
+      })
+      
+      const data = await response.json()
+      
+      if (data.success && data.respuesta) {
+        const respuestaBot: Mensaje = {
+          id: (Date.now() + 1).toString(),
+          texto: `${data.respuesta.titulo}\n\n${data.respuesta.contenido}`,
+          esUsuario: false,
+          timestamp: new Date()
+        }
+        setMensajes(prev => [...prev, respuestaBot])
+      } else {
+        // Fallback a respuesta predeterminada
+        const respuestaBot: Mensaje = {
+          id: (Date.now() + 1).toString(),
+          texto: respuestasAutomaticas[Math.floor(Math.random() * respuestasAutomaticas.length)],
+          esUsuario: false,
+          timestamp: new Date()
+        }
+        setMensajes(prev => [...prev, respuestaBot])
+      }
+    } catch (error) {
+      // En caso de error, usar respuesta automática
       const respuestaBot: Mensaje = {
         id: (Date.now() + 1).toString(),
         texto: respuestasAutomaticas[Math.floor(Math.random() * respuestasAutomaticas.length)],
@@ -65,8 +97,9 @@ export default function ChatFlotante() {
         timestamp: new Date()
       }
       setMensajes(prev => [...prev, respuestaBot])
+    } finally {
       setIsTyping(false)
-    }, 1500)
+    }
   }
 
   // ⌨️ Manejar Enter

@@ -15,7 +15,14 @@ interface OutputAEP {
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { tipo } = body
+        const { tipo, auth } = body
+        
+        // Verificación de seguridad básica para asistente médico
+        if (tipo === 'asistente_medico' && auth !== 'panel_medico_auth') {
+            return NextResponse.json({
+                error: 'Acceso no autorizado al asistente médico'
+            }, { status: 403 })
+        }
         
         // Obtener todos los pacientes para análisis completo
         const todosPacientes = await db.getAll();
@@ -67,12 +74,12 @@ export async function POST(request: Request) {
                 };
             }
         } else {
-            // Respuesta para asistente general (pacientes)
+            // Respuesta genérica (no debería llegar aquí)
             response = {
                 tipo_accion: "insight_proactivo",
-                titulo: "Sistema Operativo",
-                contenido: "El sistema está funcionando correctamente. Todas las funciones están disponibles.",
-                fuente: "Sistema AEP"
+                titulo: "Acceso Restringido",
+                contenido: "Esta API está reservada para uso médico profesional.",
+                fuente: "Sistema de Seguridad"
             };
         }
 

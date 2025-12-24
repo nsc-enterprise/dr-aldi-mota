@@ -91,12 +91,22 @@ export default function PanelMedico() {
       const res = await fetch('/api/ai-medico', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tipo: 'asistente_medico' })
+        body: JSON.stringify({ 
+          tipo: 'asistente_medico',
+          auth: 'panel_medico_auth' // Token de autenticación
+        })
       })
       
       if (res.ok) {
         const data = await res.json()
         setAiResponse(data)
+      } else {
+        setAiResponse({
+          tipo_accion: 'insight_proactivo',
+          titulo: 'Error de Acceso',
+          contenido: 'No se pudo acceder al asistente médico. Verifique los permisos.',
+          fuente: 'Sistema de Seguridad'
+        })
       }
     } catch (error) {
       setAiResponse({
