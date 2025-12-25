@@ -18,6 +18,7 @@ export default function FormularioCampana() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const tiposUltrasonido = [
     { value: 'ecografia_obstetrica', label: 'Ecografía Obstétrica (Embarazo)' },
@@ -32,12 +33,25 @@ export default function FormularioCampana() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    
+    // Validación de teléfono en tiempo real
+    if (name === 'telefono') {
+      const cleanPhone = value.replace(/\D/g, '')
+      if (cleanPhone.length <= 10) {
+        setFormData(prev => ({ ...prev, [name]: cleanPhone }))
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }))
+    }
+    
+    // Limpiar error cuando el usuario empiece a escribir
+    if (error) setError(null)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError(null)
 
     try {
       const solicitudCampana = {
@@ -56,10 +70,11 @@ export default function FormularioCampana() {
       if (response.ok) {
         setSubmitted(true)
       } else {
-        alert('Error al enviar solicitud. Intente nuevamente.')
+        const errorData = await response.json()
+        setError(errorData.message || 'Error al enviar solicitud. Intente nuevamente.')
       }
     } catch (error) {
-      alert('Error de conexión. Verifique su internet.')
+      setError('Error de conexión. Verifique su internet y vuelva a intentar.')
     } finally {
       setIsSubmitting(false)
     }

@@ -113,7 +113,7 @@ src/
 │   ├── panel-medico/      # Panel médico protegido
 │   ├── agendar/           # Historial médico completo
 │   ├── api/               # APIs del backend
-│   └── [legal]/           # Páginas legales
+│   └── [legal]/           # Páginas legales 
 ├── components/            # Componentes reutilizables
 ├── lib/                   # Utilidades y base de datos
 └── types/                 # Definiciones TypeScript
