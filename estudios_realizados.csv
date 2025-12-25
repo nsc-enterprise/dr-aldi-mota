@@ -1,0 +1,4 @@
+id,paciente_id,cita_id,tipo_estudio,fecha_estudio,resultados,interpretacion,archivo_url,estado,created_at,updated_at
+1,1,1,Ecografía Obstétrica,2024-12-25,Feto único viable,Embarazo normal de 12 semanas,/estudios/eco_001.pdf,completado,2024-12-25 09:30:00,2024-12-25 09:30:00
+2,2,2,Ecografía Abdominal,2024-12-26,Vesícula biliar normal,Sin alteraciones significativas,/estudios/eco_002.pdf,completado,2024-12-26 11:00:00,2024-12-26 11:00:00
+3,3,3,Ecocardiograma,2024-12-27,Función sistólica preservada,Corazón estructuralmente normal,/estudios/eco_003.pdf,completado,2024-12-27 14:30:00,2024-12-27 14:30:00

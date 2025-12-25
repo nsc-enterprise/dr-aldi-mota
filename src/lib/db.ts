@@ -1,260 +1,77 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@/types/supabase';
+import fs from 'fs'
+import path from 'path'
 
-/**
- * Initialize Supabase client
- * Falls back to demo mode if credentials are missing
- * Read environment variables lazily inside initSupabase to avoid build-time
- * evaluation that can happen during Next.js prerender.
- */
+const DB_PATH = path.join(process.cwd(), 'src/data/citas.json')
 
-/**
- * Validate if a string is a valid URL
- */
-function isValidUrl(urlString: string): boolean {
-  if (!urlString || urlString.trim().length === 0) return false;
-  try {
-    new URL(urlString);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Lazy initialization to avoid build-time errors when env vars are missing
-let _supabase: SupabaseClient<Database> | null = null;
-let _initAttempted = false;
-
-function initSupabase(): SupabaseClient<Database> | null {
-  // Return cached client if already initialized
-  if (_supabase) return _supabase;
-  
-  // Don't retry if we already tried and failed
-  if (_initAttempted) return null;
-  
-  _initAttempted = true;
-  // Read env vars at runtime (not module load) to avoid empty values during build
-  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
-  // Validate URL format before attempting to create client
-  if (!isValidUrl(supabaseUrl)) {
-    if (typeof window === 'undefined') {
-      // Server-side: log warning but don't throw (allows build to continue)
-      console.warn('Supabase URL is not configured or invalid. Database operations will be disabled.');
-    }
-    return null;
-  }
-
-  if (!supabaseKey || supabaseKey.trim().length === 0) {
-    if (typeof window === 'undefined') {
-      console.warn('Supabase key is not configured. Database operations will be disabled.');
-    }
-    return null;
-  }
-  
-  try {
-    _supabase = createClient<Database>(supabaseUrl, supabaseKey);
-  } catch (error) {
-    console.error('Failed to initialize Supabase client:', error);
-    return null;
-  }
-  
-  return _supabase;
-}
-
-/**
- * Get the typed Supabase client
- * @throws Error if Supabase is not configured
- */
-function getSupabase(): SupabaseClient<Database> {
-  const client = initSupabase();
-  if (!client) {
-    throw new Error('Supabase not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables.');
-  }
-  return client;
-}
-
-/**
- * Interfaz que representa una cita médica
- */
 export interface Cita {
-  /** Identificador único de la cita */
-  id: string;
-  /** Nombre completo del paciente */
-  nombre: string;
-  /** Número de teléfono del paciente */
-  telefono: string;
-  /** Motivo de la consulta */
-  motivo: string;
-  /** Fecha de creación de la cita en formato ISO */
-  fecha_creacion: string;
-  /** Estado actual de la cita */
-  estado?: 'pendiente' | 'contactado' | 'agendado' | 'cancelado' | 'finalizado';
-  /** Notas adicionales sobre la cita */
-  notas?: string;
+  id: string
+  nombre: string
+  telefono: string
+  motivo: string
+  fecha_creacion: string
+  estado?: string
+  notas?: string
 }
 
-/**
- * Objeto que contiene todas las operaciones de base de datos para citas
- */
-export const db = {
-  /**
-   * Obtiene todas las citas de la base de datos
-   * @returns Array de citas o array vacío si hay error
-   */
-  getAll: async (): Promise<Cita[]> => {
-    if (!initSupabase()) {
-      console.warn('Supabase not configured - returning empty array');
-      return [];
+function readDB(): Cita[] {
+  try {
+    if (!fs.existsSync(DB_PATH)) {
+      fs.writeFileSync(DB_PATH, '[]')
+      return []
     }
-
-    try {
-      const { data, error } = await getSupabase()
-        .from('solicitudes_pacientes')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return (data || []).map(item => ({
-        id: item.id,
-        nombre: item.nombre,
-        telefono: item.telefono,
-        motivo: item.motivo || 'Consulta médica',
-        fecha_creacion: item.created_at,
-        estado: item.estado || 'pendiente',
-        notas: item.notas
-      }));
-    } catch (error) {
-      console.error('Error fetching citas:', error);
-      return [];
-    }
-  },
-
-  /**
-   * Agrega una nueva cita a la base de datos
-   * @param cita - Datos de la cita (sin id, fecha_creacion ni estado)
-   * @returns La cita creada con todos sus campos
-   */
-  add: async (cita: Omit<Cita, 'id' | 'fecha_creacion' | 'estado'>) => {
-    try {
-      const newCita = {
-        nombre: cita.nombre,
-        telefono: cita.telefono,
-        motivo: cita.motivo,
-        estado: 'pendiente'
-      };
-      
-      const { data, error } = await getSupabase()
-        .from('solicitudes_pacientes')
-        .insert([newCita])
-        .select()
-        .single();
-
-      if (error) throw error;
-      return {
-        id: data.id,
-        nombre: data.nombre,
-        telefono: data.telefono,
-        motivo: data.motivo,
-        fecha_creacion: data.created_at,
-        estado: data.estado,
-        notas: data.notas
-      } as Cita;
-    } catch (error) {
-      console.error('Error adding cita:', error);
-      throw error;
-    }
-  },
-
-  /**
-   * Actualiza una cita existente
-   * @param id - Identificador de la cita a actualizar
-   * @param updates - Campos a actualizar
-   * @returns La cita actualizada o null si no se encuentra
-   */
-  update: async (id: string, updates: Partial<Cita>) => {
-    try {
-      const { data, error } = await getSupabase()
-        .from('solicitudes_pacientes')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return {
-        id: data.id,
-        nombre: data.nombre,
-        telefono: data.telefono,
-        motivo: data.motivo,
-        fecha_creacion: data.created_at,
-        estado: data.estado,
-        notas: data.notas
-      } as Cita;
-    } catch (error) {
-      console.error('Error updating cita:', error);
-      return null;
-    }
-  },
-
-  /**
-   * Elimina una cita de la base de datos
-   * @param id - Identificador de la cita a eliminar
-   * @returns true si se eliminó, false si no se encontró
-   */
-  delete: async (id: string) => {
-    try {
-      const { error } = await getSupabase()
-        .from('solicitudes_pacientes')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      return true;
-    } catch (error) {
-      console.error('Error deleting cita:', error);
-      return false;
-    }
-  },
-
-  /**
-   * Obtiene la última cita registrada
-   * @returns La última cita o null si no hay ninguna
-   */
-  getLast: async (): Promise<Cita | null> => {
-    if (!initSupabase()) {
-      console.warn('Supabase not configured - returning null');
-      return null;
-    }
-
-    try {
-      const { data, error } = await getSupabase()
-        .from('solicitudes_pacientes')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          // No rows returned - this is expected when table is empty
-          return null;
-        }
-        throw error;
-      }
-      return {
-        id: data.id,
-        nombre: data.nombre,
-        telefono: data.telefono,
-        motivo: data.motivo,
-        fecha_creacion: data.created_at,
-        estado: data.estado,
-        notas: data.notas
-      } as Cita;
-    } catch (error) {
-      console.error('Error fetching last cita:', error);
-      return null;
-    }
+    const data = fs.readFileSync(DB_PATH, 'utf8')
+    return JSON.parse(data)
+  } catch {
+    return []
   }
-};
+}
+
+function writeDB(data: Cita[]): void {
+  try {
+    const dir = path.dirname(DB_PATH)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2))
+  } catch (error) {
+    console.error('Error writing to database:', error)
+  }
+}
+
+export const db = {
+  getAll: async (): Promise<Cita[]> => {
+    return readDB().sort((a, b) => new Date(b.fecha_creacion).getTime() - new Date(a.fecha_creacion).getTime())
+  },
+
+  add: async (cita: Omit<Cita, 'id' | 'fecha_creacion'>) => {
+    const data = readDB()
+    const newCita: Cita = {
+      id: Date.now().toString(),
+      ...cita,
+      fecha_creacion: new Date().toISOString(),
+      estado: 'pendiente'
+    }
+    data.push(newCita)
+    writeDB(data)
+    return newCita
+  },
+
+  update: async (id: string, updates: Partial<Cita>) => {
+    const data = readDB()
+    const index = data.findIndex(item => item.id === id)
+    if (index === -1) return null
+    
+    data[index] = { ...data[index], ...updates }
+    writeDB(data)
+    return data[index]
+  },
+
+  delete: async (id: string) => {
+    const data = readDB()
+    const filtered = data.filter(item => item.id !== id)
+    if (filtered.length === data.length) return false
+    
+    writeDB(filtered)
+    return true
+  }
+}

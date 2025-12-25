@@ -1,12 +1,32 @@
 {
   "name": "doctor-aldimir-mota",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.1.0",
+  "description": "Sistema médico digital completo para el Dr. Aldimir Mota - Tres Valles, Veracruz",
+  "author": "NSC Enterprise <soporte@nsc-enterprise.com>",
+  "license": "MIT",
+  "homepage": "https://dr-aldimir-mota.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nsc-enterprise/dr-aldi-mota.git"
+  },
+  "keywords": [
+    "medical",
+    "healthcare",
+    "ultrasound",
+    "patient-management",
+    "nextjs",
+    "typescript",
+    "tailwindcss",
+    "pwa"
+  ],
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "type-check": "tsc --noEmit",
+    "export": "next build && next export"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.88.0",
@@ -25,5 +45,9 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   }
 }

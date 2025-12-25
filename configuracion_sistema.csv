@@ -1,0 +1,7 @@
+id,clave,valor,descripcion,tipo,created_at,updated_at
+1,horario_inicio,08:00:00,Hora de inicio de consultas,time,2024-12-22 08:00:00,2024-12-22 08:00:00
+2,horario_fin,18:00:00,Hora de fin de consultas,time,2024-12-22 08:00:00,2024-12-22 08:00:00
+3,duracion_cita,30,Duración promedio de cita en minutos,integer,2024-12-22 08:00:00,2024-12-22 08:00:00
+4,telefono_consultorio,2293690042,Teléfono principal del consultorio,string,2024-12-22 08:00:00,2024-12-22 08:00:00
+5,email_consultorio,medicinmota@outlook.com,Email principal del consultorio,string,2024-12-22 08:00:00,2024-12-22 08:00:00
+6,direccion_consultorio,Av. Adolfo Ruiz Cortinez #300,Dirección del consultorio,string,2024-12-22 08:00:00,2024-12-22 08:00:00
